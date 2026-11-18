@@ -1,0 +1,48 @@
+[build-system]
+requires = ["hatchling"]
+build-backend = "hatchling.build"
+
+
+[project]
+name = "wink"
+version = "0.1.0"
+description = "Complex-valued pixel diffusion — the visual counterpart to TARDITS"
+readme = "README.md"
+requires-python = ">=3.13"
+dependencies = [
+    "numpy>=2.5.1",
+    "pyyaml>=6.0.3",
+    "tardits>=0.3.0",
+    "torch>=2.13.0",
+]
+
+[project.optional-dependencies]
+mlflow = [
+    "matplotlib>=3.11.1",
+    "mlflow>=3.14.0",
+]
+
+[project.scripts]
+wtrain = "wink.train:main"
+wsample = "wink.sample:main"
+
+[dependency-groups]
+dev = [
+    "pytest>=9.1.1",
+]
+
+[tool.hatch.build.targets.wheel]
+packages = ["src/wink"]
+
+# CPU-only on t14 and in CI. The same lock can be overridden in a CUDA
+# environment by changing this index; the code does not branch on it.
+[[tool.uv.index]]
+name = "pytorch-cpu"
+url = "https://download.pytorch.org/whl/cpu"
+explicit = true
+
+[tool.uv.sources]
+torch = { index = "pytorch-cpu" }
+
+[tool.pytest.ini_options]
+testpaths = ["tests"]

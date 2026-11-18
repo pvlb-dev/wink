@@ -1,0 +1,61 @@
+# CIFAR-10 class-conditional. This is the M2 config; the shipped budget is a
+# 200-step CPU smoke to prove the pipeline, not a reportable run. Scale
+# max_iters/batch and add FID (issue #10) when an accelerator window is free.
+device: auto
+seed: 1337
+
+model:
+  arch: hyper
+  level: 1
+  image_size: 32
+  in_channels: 3
+  patch_size: 4
+  n_head: 4
+  n_embd: 64
+  n_layer: 4
+  dropout: 0.1
+  num_classes: 10
+  time_conditioning: rotor
+  pos_embed: learned2d
+
+diffusion:
+  timesteps: 1000
+  schedule: linear
+  prediction: epsilon
+  beta_start: 0.0001
+  beta_end: 0.02
+  sampler: ddim
+  sampler_steps: 50
+  eta: 0.0
+
+trainer:
+  batch_size: 32
+  max_iters: 200
+  eval_interval: 50
+  eval_iters: 5
+  learning_rate: 0.0002
+  weight_decay: 0.01
+  seed: 1337
+  gamma_max: 1.0
+  checkpoint_dir: examples/saved/cifar10_smoke
+  save_interval: 100
+  sample_interval: 100
+  sample_count: 16
+  torch_threads: 8
+
+mlflow:
+  experiment: wink-cifar10
+  run_name: hyper-l1-p4-d64-smoke
+  tags:
+    dataset: cifar10
+    seed: "1337"
+    seq_len: "64"
+    budget: smoke
+  tracking_uri: sqlite:///mlflow.db
+  log_interval: 10
+  system_metrics: false
+
+data:
+  name: cifar10
+  root: examples/data
+  download: true

@@ -5,7 +5,12 @@ bin/
 target/
 __pycache__/
 *.egg-info/
+*.py[oc]
 .venv/
+.uv-cache/
+.pytest_cache/
+.ruff_cache/
+.cache/
 
 # editor / OS
 .obsidian/workspace*.json
@@ -13,4 +18,18 @@ __pycache__/
 .DS_Store
 *.swp
 
-# AGENTS.d/ is added by the new project's first five minutes, not here.
+# private knowledge clone — separate repo, never part of this one
+AGENTS.d/
+
+# datasets, checkpoints and run artifacts — never commit these
+examples/data/*
+!examples/data/.gitkeep
+examples/saved/*
+!examples/saved/.gitkeep
+mlruns/
+mlflow.db
+*.pt
+*.ckpt
+
+# local logs
+*.log

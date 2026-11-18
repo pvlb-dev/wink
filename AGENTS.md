@@ -1,16 +1,21 @@
-# AGENTS.md — {{project}} on t14
-
-> **Fill this table in before you start. Everything else in this file already
-> works.** Six values, and an agent can work without asking a single question.
+# AGENTS.md — wink on t14
 
 | field | value |
 |---|---|
-| project | `<name>` |
-| purpose | `<one line: what it is and what "working" means>` |
-| org / repo | `<org>/<name>` |
-| origin | `git@git.pvlb.dev:<org>/<name>.git` |
-| knowledge repo | `git@git.pvlb.dev:agentic/<name>.git` |
-| package | `none` / `pypi:<name>` / `npm:@pvlb/<name>` / `forgejo:<org>/<name>` |
+| project | `wink` |
+| purpose | Complex-valued pixel diffusion, the visual counterpart to TARDITS. Working = a checkpoint whose 28×28 samples are recognizable and a measured hyper-vs-RAT decision. |
+| org / repo | `ml-lab/wink` |
+| origin | `ssh://git@git-dsh/ml-lab/wink.git` (via the `git-dsh` alias, never the plain host) |
+| knowledge repo | `ssh://git@git-dsh/agentic/wink.git` |
+| package | `none` (not published; no release workflow yet) |
+
+`wink` is the image sibling of `ml-lab/tardits`: same complex-valued algebra,
+same config/trainer/logging conventions, new domain. It depends on
+`tardits>=0.3.0` for the shared layers and the bidirectional RAT block; all
+image-specific code lives here. **No VAE**: diffusion runs directly in pixel
+space at 28×28 and 32×32. The first model is MNIST; CIFAR-10 is the next
+milestone. The research question and evidence live in Forgejo milestone M1 and
+[`AGENTS.d/architecture.md`](AGENTS.d/architecture.md).
 
 You are **Deeps**; the operator is **Master**. The machine manual is the `ops`
 wiki. **This file wins over it** on anything project-specific — and the wiki is
@@ -128,8 +133,9 @@ That is the most important fact of this box, and it is the opposite of
 - **The agent may tag on a green `master`.** Shipping a version is not an
   operator-only action; creating repo secrets is (see `AGENTS.d/forge.md`).
 
-`.forgejo/workflows/ci.yml` in this repo is a **skeleton, not a green build** — its
-only step is `exit 1` on purpose, so nothing false is asserted.
+`.forgejo/workflows/ci.yml` in this repo is a real build: `uv sync --locked`,
+`compileall`, import smoke and `pytest -q` on `runs-on: docker`. It has no
+`pull_request` trigger; dispatch it manually against a feature branch.
 
 When the first release is due, copy all four from **`dsh-plugins/dsh-gitea@master`**:
 `ci.yml`, `publish.yml`, `publish-npmjs.yml`, `release.yml`, plus
@@ -147,6 +153,7 @@ Add a row the first time a task makes you read a file twice.
 | CI, secrets, the registry, this repo's workflow set | `AGENTS.d/forge.md` |
 | how it is built, the data model, the moving parts | `AGENTS.d/architecture.md` |
 | how it runs, where, and how it gets updated | `AGENTS.d/deployment.md` |
+| the denoiser, diffusion schedule, sampler, time rotor | `AGENTS.d/architecture.md` + `docs/model-internals.md` |
 | a machine problem, not a code problem | the table in *The contract* |
 | something that broke once already | `AGENTS.d/gotchas.md` |
 | git identity, signing, credentials | `GIT.md` (and `AGENTS.d/GIT` once it exists) |
@@ -187,33 +194,58 @@ Add a row the first time a task makes you read a file twice.
 
 ```text
 AGENTS.md               this map
-README.md               what this is
-.gitignore              build/editor noise; AGENTS.d/ is added per project
-.forgejo/workflows/     CI; ci.yml is a skeleton, red on purpose
-AGENTS.d/               private knowledge clone (tracked here, untracked per project)
+README.md               what this is, quickstart, honest status
+pyproject.toml          hatchling; deps; wtrain/wsample console scripts
+uv.lock, .python-version
+.forgejo/workflows/     CI (manual dispatch + master push only)
+src/wink/               namespace package: train, sample, models/, modules/
+tests/                  unit + overfit smoke; no network needed
+examples/configs/       mnist_rat (best), mnist_hyper, cifar10_hyper, experiment screens
+examples/data/          datasets, gitignored
+examples/saved/         checkpoints and sample grids, gitignored
+docs/                   index, model internals, repo map, experiments, findings
+AGENTS.d/               private knowledge clone (ignored here, separate repo)
   GIT.md                auth and signing
+  architecture.md       design decisions and port map
+  forge.md              CI reality
+  deployment.md         t14 CPU now, accelerator later
+  gotchas.md            traps that cost a round
   input/                the drop box, gitignored contents
 ```
 
-## First five minutes
+## Running it
 
 ```bash
-git remote set-url origin <origin from the table above>
-git branch -m master                 # if the clone came up as main
-
-# AGENTS.d/ ships tracked so the clone has the auth instructions. It must not be
-# tracked in the project: untrack it, keep the files, and ignore the directory.
-git rm -r --cached -q AGENTS.d
-printf 'AGENTS.d/
-' >> .gitignore
+uv sync --locked --extra mlflow
+.venv/bin/pytest -q
+.venv/bin/wtrain -c examples/configs/mnist_rat.yaml
+.venv/bin/wsample -c examples/configs/mnist_rat.yaml \
+  --checkpoint examples/saved/mnist_rat_h16/final.pt -n 64 -o samples.png
+mlflow ui --backend-store-uri sqlite:///mlflow.db
 ```
 
-Then: fill the table at the top, write `README.md`'s first paragraph, replace
-`AGENTS.d/GIT.md` with this project's own knowledge clone when one exists, apply
-the label set **to this repo** with `gitea_label_bootstrap {owner, repo, confirm:
-true}` (labels are per repo in Forgejo, there is no org-wide operation), and open
-the first issue. **Setup is complete when `git push` works, `git status` does not
-list `AGENTS.d/`, and the first issue is labelled.** Not before.
+CPU only on this box. Set `torch_threads` explicitly in the trainer section; keep
+the first MNIST runs at the matched 3,000-step budget. Kaggle/Colab runs are
+blocked by the tesseract work and are not part of this milestone.
+
+## First five minutes
+
+The setup is already complete; this section records what was done so a fresh
+clone can be checked:
+
+```bash
+git remote set-url origin ssh://git@git-dsh/ml-lab/wink.git
+git config core.sshCommand "ssh -F $HOME/.ssh/config"
+git config user.name dsh
+git config user.email dsh@pvlb.dev
+git config commit.gpgsign true
+git config user.signingkey 7639CA2B2FB8F6C5D1D161F60047F55EB3D4733B
+git clone ssh://git@git-dsh/agentic/wink.git AGENTS.d   # when absent
+```
+
+`AGENTS.d/` is untracked and ignored here. **Setup is complete when `git push`
+works, `git status` does not list `AGENTS.d/`, and the first issue is
+labelled.**
 
 ## House rule: keep this file small
 

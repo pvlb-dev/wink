@@ -1,7 +1,9 @@
 name: CI
 
-# Deliberately no pull_request trigger: the runner hands every job the host
-# Docker socket, so only maintainer-controlled events may execute a workflow.
+# No pull_request trigger: the shared runner hands every job the host Docker
+# socket, so only maintainer-controlled events (push to master or manual
+# dispatch) may execute a workflow. Run this manually against feat/<slug>
+# before self-merging.
 on:
   push:
     branches: [master]
@@ -12,9 +14,26 @@ jobs:
     runs-on: docker
     timeout-minutes: 15
     steps:
-      - uses: actions/checkout@v4
-      # Replace with the project's real toolchain. Keep the job under ~1 GB.
-      - name: Build and test
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Install uv
+        run: curl -LsSf https://astral.sh/uv/install.sh | sh
+
+      - name: Sync dependencies
+        run: ~/.local/bin/uv sync --locked
+
+      - name: Byte-compile the package
+        run: ~/.local/bin/uv run python -m compileall -q src/wink
+
+      - name: Import smoke test
         run: |
-          echo "replace this step"
-          exit 1
+          ~/.local/bin/uv run python - <<'PY'
+          import wink.train
+          import wink.sample
+          from wink.models import build_model, available_archs
+          print("imports ok:", available_archs())
+          PY
+
+      - name: Tests
+        run: ~/.local/bin/uv run pytest -q
