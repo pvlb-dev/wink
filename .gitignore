@@ -1,0 +1,16 @@
+# build / editor noise — keep the map's claim true
+node_modules/
+dist/
+bin/
+target/
+__pycache__/
+*.egg-info/
+.venv/
+
+# editor / OS
+.obsidian/workspace*.json
+.trash/
+.DS_Store
+*.swp
+
+# AGENTS.d/ is added by the new project's first five minutes, not here.
