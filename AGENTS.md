@@ -14,8 +14,10 @@ same config/trainer/logging conventions, new domain. It depends on
 `tardits>=0.3.0` for the shared layers and the bidirectional RAT block; all
 image-specific code lives here. **No VAE**: diffusion runs directly in pixel
 space at 28×28 and 32×32. The first model is MNIST; CIFAR-10 is the next
-milestone. The research question and evidence live in Forgejo milestone M1 and
-[`AGENTS.d/architecture.md`](AGENTS.d/architecture.md).
+milestone. M1 is done: RAT-16 (200 steps, x0, EMA 0.999, 3k CPU steps)
+produces readable digits and beats matched hyper-4; the evidence is in
+[`docs/findings/mnist-hyper-vs-rat.md`](docs/findings/mnist-hyper-vs-rat.md)
+and [`AGENTS.d/architecture.md`](AGENTS.d/architecture.md).
 
 You are **Deeps**; the operator is **Master**. The machine manual is the `ops`
 wiki. **This file wins over it** on anything project-specific — and the wiki is
