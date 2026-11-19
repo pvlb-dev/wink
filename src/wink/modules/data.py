@@ -62,11 +62,18 @@ def _ensure_dir(path: str) -> str:
 
 
 def _download(url: str, dest: str) -> str:
+    # Never treat a zero-byte or partial file as complete. Download to a
+    # temporary sibling and rename atomically, so an interrupted fetch cannot
+    # poison the cache with a truncated archive.
     if os.path.exists(dest) and os.path.getsize(dest) > 0:
         return dest
     _ensure_dir(os.path.dirname(dest))
+    tmp = dest + ".part"
+    if os.path.exists(tmp):
+        os.remove(tmp)
     print(f"downloading {url}")
-    urllib.request.urlretrieve(url, dest)
+    urllib.request.urlretrieve(url, tmp)
+    os.replace(tmp, dest)
     return dest
 
 
