@@ -1,0 +1,65 @@
+# CIFAR-10 class-conditional, 10k-step hyper run. RAT-32 is the MNIST winner,
+# but its bidirectional scan window shrinks below 64 tokens as gamma decays
+# (~3-4k steps), so the 64-token CIFAR run uses the softmax baseline instead. This is still a CPU run: expect color/texture structure, not
+# ImageNet-style objects, and no FID claim until the 10k-sample eval exists.
+device: auto
+seed: 1337
+
+model:
+  arch: hyper
+  level: 1
+  image_size: 32
+  in_channels: 3
+  patch_size: 4
+  n_head: 4
+  n_embd: 64
+  n_layer: 4
+  dropout: 0.0
+  num_classes: 10
+  time_conditioning: rotor
+  pos_embed: learned2d
+
+diffusion:
+  timesteps: 200
+  schedule: linear
+  prediction: x0
+  beta_start: 0.0001
+  beta_end: 0.02
+  sampler: ddim
+  sampler_steps: 50
+  eta: 0.0
+
+trainer:
+  batch_size: 64
+  max_iters: 10000
+  eval_interval: 1000
+  eval_iters: 20
+  learning_rate: 0.001
+  weight_decay: 0.01
+  seed: 1337
+  gamma_max: 1.0
+  checkpoint_dir: examples/saved/cifar10_hyper_10k
+  save_interval: 2000
+  sample_interval: 1000
+  sample_count: 16
+  torch_threads: 8
+  ema_decay: 0.999
+
+mlflow:
+  experiment: wink-cifar10
+  run_name: cifar10-hyper-x0-t200-10k
+  tags:
+    dataset: cifar10
+    seed: "1337"
+    seq_len: "64"
+    timesteps: "200"
+    budget: 10k-hyper
+    ema: "0.999"
+  tracking_uri: sqlite:///mlflow.db
+  log_interval: 10
+  system_metrics: false
+
+data:
+  name: cifar10
+  root: examples/data
+  download: true

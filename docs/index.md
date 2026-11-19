@@ -28,7 +28,7 @@ length.
 |---|---|---|
 | M1 | Does a complex-valued diffusion transformer learn MNIST, and which attention is the better prior at 49 tokens? | **done**: RAT-16 beats hyper-4 at 3k steps; see the finding |
 | M1 head sweep | How many RAT heads at 49 tokens? | **done**: h8/h32 tie on val; h32 is 1.8× faster than h16; see the sweep report |
-| M2 | Can it produce a reportable CIFAR-10 FID at 32×32? | pipeline smoke only; no FID; accelerator blocked |
+| M2 | Can it produce a reportable CIFAR-10 FID at 32×32? | 10k hyper run done (val 0.0347); FID over 10k samples in progress; RAT blocked at 64 tokens (#14) |
 
 No number in this repo is a claim until the run report states the budget and the
 sample count. The M1 prior was recorded before the run: hyper expected to win on
