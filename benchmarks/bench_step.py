@@ -37,10 +37,15 @@ def main() -> None:
         args.batch, model_conf.in_channels, model_conf.image_size, model_conf.image_size,
         device=device,
     )
+    y = None
+    if model_conf.num_classes > 0:
+        y = torch.randint(
+            0, model_conf.num_classes, (args.batch,), device=device
+        )
 
     def step() -> float:
         t = torch.randint(0, diffusion.timesteps, (args.batch,), device=device)
-        loss, _ = diffusion.loss(model, x0, t)
+        loss, _ = diffusion.loss(model, x0, t, y)
         optimizer.zero_grad(set_to_none=True)
         loss.backward()
         optimizer.step()

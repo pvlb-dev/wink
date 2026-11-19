@@ -85,6 +85,22 @@ That is a hypothesis for the next run, not a proven mechanism.
 Grids: `docs/assets/mnist/rat_h16_final_64.png`,
 `docs/assets/mnist/hyper_x0_3k_64.png`, `docs/assets/mnist/hyper_wide_final_64.png`.
 
+
+## Head sweep (2026-11-19)
+
+Same recipe, only `n_head` changed. One seed, 3,000 steps.
+
+| heads | ms/step | wall | val x0-MSE |
+|---:|---:|---:|---:|
+| 8 | 461 | 24.4 min | 0.0617 |
+| 16 | 398 | 18.8 min | 0.0629 |
+| 32 | **217.5** | **14.3 min** | **0.0617** |
+
+More heads are monotonically faster and the quality saturates at 8–32; RAT-32
+is the CPU recommendation. The state shrinks with more heads, so this is not a
+memory-capacity story. Full report:
+[`../experiments/2026-11-19-rat-head-sweep.md`](../experiments/2026-11-19-rat-head-sweep.md).
+
 ## Verdict
 
 At 49 image tokens on CPU, **RAT-16 is the better first prior**. Hyper remains

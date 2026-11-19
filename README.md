@@ -19,19 +19,30 @@ The research question for the first milestone was deliberately narrow:
 The prior was hyper, based on dagoBERT's T=80 A/B. At 49 tokens and
 `n_head=16`, the bidirectional RAT denoiser reached val x0-MSE **0.0629** and
 produced readable digits; the matched hyper softmax baseline reached **0.0801**
-and its samples stayed blob-like. RAT-16 is also **2.6× faster per step** than
-RAT-4 on CPU (398 ms vs 1,033 ms), so the operator's "RAT loves many heads" note
-held. The full table, the failed runs and the caveats are in
-[`docs/findings/mnist-hyper-vs-rat.md`](docs/findings/mnist-hyper-vs-rat.md).
+and its samples stayed blob-like.
+
+A follow-up head sweep (same recipe, only `n_head` changed) made the many-head
+effect clearer: RAT-8/16/32 reached 0.0617 / 0.0629 / 0.0617, while step time
+fell from 461 ms to 398 ms to **217.5 ms**. Quality saturates at 8–32 heads;
+speed keeps improving. **RAT-32 is the CPU recommendation**, but the original
+RAT-16 grid below is the M1 result.
+
+The full tables, failed runs and caveats:
+[`docs/findings/mnist-hyper-vs-rat.md`](docs/findings/mnist-hyper-vs-rat.md),
+[`docs/experiments/2026-11-19-rat-head-sweep.md`](docs/experiments/2026-11-19-rat-head-sweep.md).
 
 ![RAT-16 samples after 3,000 CPU steps](docs/assets/mnist/rat_h16_final_64.png)
 
 ## Status
 
 - **M1 (done):** MNIST, both denoisers, matched CPU budget, sample grids, decision
-  note. The best recipe is `mnist_rat.yaml` (RAT, 16 heads, 200 diffusion steps,
-  x0 prediction, EMA 0.999).
+  note. The original result is `mnist_rat.yaml` (RAT-16); the head sweep's CPU
+  recommendation is `mnist_rat_h32.yaml` (same recipe, 32 heads, 1.8× faster).
 - **M2 (next):** CIFAR-10 class-conditional at 32×32, FID over ≥10,000 samples.
+  The pipeline is live (50k/10k loader, 64-token RAT-32, class conditioning);
+  the 3,000-step smoke produces color textures, not objects, and is **not** a
+  CIFAR result. See
+  [`docs/experiments/2026-11-19-cifar10-smoke.md`](docs/experiments/2026-11-19-cifar10-smoke.md).
 - Text conditioning, CelebA and any VAE/latent variant are out of scope for v0.
 
 Training on Kaggle/Colab is currently blocked by the tesseract runs, so all
@@ -43,8 +54,11 @@ results here are CPU-only on t14. The package is not published yet.
 uv sync --locked --extra mlflow
 .venv/bin/pytest -q
 
-# the working recipe (CPU, ~19 min, 3,000 steps)
+# the original M1 recipe (CPU, ~19 min, 3,000 steps)
 .venv/bin/wtrain -c examples/configs/mnist_rat.yaml
+
+# the sweep recommendation: same quality, 1.8x faster per step
+.venv/bin/wtrain -c examples/configs/mnist_rat_h32.yaml
 
 # the matched hyper baseline (~11 min)
 .venv/bin/wtrain -c examples/configs/mnist_hyper.yaml
