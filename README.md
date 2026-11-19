@@ -38,11 +38,13 @@ The full tables, failed runs and caveats:
 - **M1 (done):** MNIST, both denoisers, matched CPU budget, sample grids, decision
   note. The original result is `mnist_rat.yaml` (RAT-16); the head sweep's CPU
   recommendation is `mnist_rat_h32.yaml` (same recipe, 32 heads, 1.8× faster).
-- **M2 (next):** CIFAR-10 class-conditional at 32×32, FID over ≥10,000 samples.
-  The pipeline is live (50k/10k loader, 64-token RAT-32, class conditioning);
-  the 3,000-step smoke produces color textures, not objects, and is **not** a
-  CIFAR result. See
-  [`docs/experiments/2026-11-19-cifar10-smoke.md`](docs/experiments/2026-11-19-cifar10-smoke.md).
+- **M2 (in progress):** CIFAR-10 class-conditional at 32×32. A 10,000-step
+  **hyper** run reached val x0-MSE **0.0347**; samples are stylized color/texture
+  scenes, not clean objects, and FID over 10k samples is being measured. RAT-32
+  cannot do the 64-token CIFAR window yet: its bidirectional scan shrinks below
+  64 after ~4k steps (issue #14). See
+  [`docs/experiments/2026-11-19-cifar10-10k.md`](docs/experiments/2026-11-19-cifar10-10k.md)
+  and [`docs/experiments/2026-11-19-cifar10-smoke.md`](docs/experiments/2026-11-19-cifar10-smoke.md).
 - Text conditioning, CelebA and any VAE/latent variant are out of scope for v0.
 
 Training on Kaggle/Colab is currently blocked by the tesseract runs, so all

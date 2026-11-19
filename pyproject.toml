@@ -21,10 +21,16 @@ mlflow = [
     "matplotlib>=3.11.1",
     "mlflow>=3.14.0",
 ]
+eval = [
+    "pillow>=11.0.0",
+    "pytorch-fid>=0.3.0",
+    "torchvision>=0.28.0",
+]
 
 [project.scripts]
 wtrain = "wink.train:main"
 wsample = "wink.sample:main"
+weval = "wink.eval:main"
 
 [dependency-groups]
 dev = [
@@ -43,6 +49,7 @@ explicit = true
 
 [tool.uv.sources]
 torch = { index = "pytorch-cpu" }
+torchvision = { index = "pytorch-cpu" }
 
 [tool.pytest.ini_options]
 testpaths = ["tests"]
