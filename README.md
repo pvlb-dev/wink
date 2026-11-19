@@ -40,11 +40,13 @@ The full tables, failed runs and caveats:
   recommendation is `mnist_rat_h32.yaml` (same recipe, 32 heads, 1.8× faster).
 - **M2 (in progress):** CIFAR-10 class-conditional at 32×32. A 10,000-step
   **hyper** run reached val x0-MSE **0.0347**; samples are stylized color/texture
-  scenes, not clean objects, and FID over 10k samples is being measured. RAT-32
+  scenes, not clean objects, and a measured **FID of 160.36** over 10,000
+  samples. RAT-32
   cannot do the 64-token CIFAR window yet: its bidirectional scan shrinks below
   64 after ~4k steps (issue #14). See
   [`docs/experiments/2026-11-19-cifar10-10k.md`](docs/experiments/2026-11-19-cifar10-10k.md)
   and [`docs/experiments/2026-11-19-cifar10-smoke.md`](docs/experiments/2026-11-19-cifar10-smoke.md).
+  The FID is a baseline, not a competitive CIFAR result.
 - Text conditioning, CelebA and any VAE/latent variant are out of scope for v0.
 
 Training on Kaggle/Colab is currently blocked by the tesseract runs, so all

@@ -1,0 +1,9 @@
+{
+  "checkpoint": "examples/saved/cifar10_hyper_10k/final.pt",
+  "arch": "hyper",
+  "samples": 10000,
+  "steps": 50,
+  "seed": 0,
+  "real_images": 10000,
+  "fid": 160.3555092718259
+}
