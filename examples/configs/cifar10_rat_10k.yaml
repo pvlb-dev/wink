@@ -1,7 +1,6 @@
-# CIFAR-10 class-conditional, 10k-step RAT-32 run. WARNING: this currently
-# crashes at ~4k steps because the bidirectional RAT window shrinks below the 64
-# patch tokens as gamma decays. See issue #14. The 10k recovery run uses the
-# hyper fallback in cifar10_hyper_10k.yaml. This is still a CPU run: expect color/texture structure, not
+# CIFAR-10 class-conditional, 10k-step RAT-32 run with the chunked bidirectional
+# scan (issue #14). The stock tardits block rejects T > its gamma-derived chunk;
+# this variant carries the fast-weight state across chunks. This is still a CPU run: expect color/texture structure, not
 # ImageNet-style objects, and no FID claim until the 10k-sample eval exists.
 device: auto
 seed: 1337
@@ -39,7 +38,7 @@ trainer:
   weight_decay: 0.01
   seed: 1337
   gamma_max: 1.0
-  checkpoint_dir: examples/saved/cifar10_rat_h32_10k
+  checkpoint_dir: examples/saved/cifar10_rat_h32_10k_chunked
   save_interval: 2000
   sample_interval: 1000
   sample_count: 16
@@ -48,7 +47,7 @@ trainer:
 
 mlflow:
   experiment: wink-cifar10
-  run_name: cifar10-rat-h32-x0-t200-10k
+  run_name: cifar10-rat-h32-x0-t200-10k-chunked
   tags:
     dataset: cifar10
     seed: "1337"

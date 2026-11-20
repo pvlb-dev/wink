@@ -1,0 +1,9 @@
+{
+  "checkpoint": "examples/saved/cifar10_rat_h32_10k_chunked/final.pt",
+  "arch": "rat",
+  "samples": 10000,
+  "steps": 50,
+  "seed": 0,
+  "real_images": 10000,
+  "fid": 156.12162041206244
+}
