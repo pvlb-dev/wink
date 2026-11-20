@@ -44,6 +44,7 @@ The full tables, failed runs and caveats:
   chunked bidirectional scan fix, with **FID 156.12** on the same protocol. Samples are stylized color/texture scenes, not clean objects. See
   [`2026-11-19-cifar10-10k.md`](docs/experiments/2026-11-19-cifar10-10k.md),
   [`2026-11-20-cifar10-rat-chunked.md`](docs/experiments/2026-11-20-cifar10-rat-chunked.md),
+  [`2026-11-20-cifar10-head-sweep.md`](docs/experiments/2026-11-20-cifar10-head-sweep.md),
   and [`2026-11-19-cifar10-smoke.md`](docs/experiments/2026-11-19-cifar10-smoke.md).
   The FIDs are baselines, not competitive CIFAR results.
 - Text conditioning, CelebA and any VAE/latent variant are out of scope for v0.
