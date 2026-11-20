@@ -1,0 +1,9 @@
+{
+  "checkpoint": "examples/saved/cifar10_rat_w96_4l/final.pt",
+  "arch": "rat",
+  "samples": 10000,
+  "steps": 50,
+  "seed": 0,
+  "real_images": 10000,
+  "fid": 149.59614809855512
+}
