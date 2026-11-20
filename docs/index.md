@@ -25,6 +25,8 @@ length.
   — CIFAR-10 pipeline smoke (not a benchmark).
 - [`experiments/2026-11-20-cifar10-head-sweep.md`](experiments/2026-11-20-cifar10-head-sweep.md)
   — CIFAR RAT head sweep at 10k.
+- [`experiments/2026-11-20-cifar10-20k-cosine.md`](experiments/2026-11-20-cifar10-20k-cosine.md)
+  — CIFAR RAT-32 20k cosine run and progression.
 
 ## Evidence so far
 
@@ -33,6 +35,7 @@ length.
 | M1 | Does a complex-valued diffusion transformer learn MNIST, and which attention is the better prior at 49 tokens? | **done**: RAT-16 beats hyper-4 at 3k steps; see the finding |
 | M1 head sweep | How many RAT heads at 49 tokens? | **done**: h8/h32 tie on val; h32 is 1.8× faster than h16; see the sweep report |
 | M2 head sweep | Does head count change CIFAR sample character? | **done at 10k**: h32 fastest, quality saturates; rows nearly identical; FID 156.12 only for h32 |
+| M2 long run | Does a 20k cosine run learn objects? | **no**: val 0.0326 at 17k, but FID 178.68 at 16k vs 156.12 at 10k; capacity, not steps |
 | M2 | Can it produce a reportable CIFAR-10 FID at 32×32? | hyper 10k: val 0.0347, **FID 160.36**; RAT 10k: val 0.0351, **FID 156.12** (chunked scan fix); both far from published numbers, one seed |
 
 No number in this repo is a claim until the run report states the budget and the

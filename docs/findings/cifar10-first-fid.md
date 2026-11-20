@@ -55,6 +55,20 @@ Head count changes speed more than sample character: the RAT-8/16/32 sample rows
 are nearly identical at this scale. h32 stays the CPU pick. One seed; wall times
 were taken under variable laptop load.
 
+
+## Longer run: 20k cosine
+
+A 20k-step RAT-32 run with cosine LR reached val x0-MSE **0.0326** at 17k
+(0.0347 at 20k), better than the 10k run's 0.0351. The 16k checkpoint's FID,
+however, was **178.68** on the same 10k/10k protocol — worse than the 10k
+checkpoint's **156.12**.
+
+So more steps improved the regression loss but not sample quality; the model
+refined textures and drifted. The 10k constant-LR checkpoint remains the best FID
+model. This is the same lesson as dagoBERT: **do not select checkpoints by val
+loss alone, and do not assume more steps buy object quality.** At 0.25M params,
+the next lever is capacity/data/architecture, not another 10k steps.
+
 ## Caveats
 
 - One seed, one 10k-step CPU budget; no hyperparameter sweep at 32×32.

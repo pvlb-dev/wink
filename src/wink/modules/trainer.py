@@ -33,6 +33,10 @@ class TrainerConfig:
     # EMA of the weights is cheap and usually improves diffusion samples. 0
     # disables it; 0.999 is the default for the extended MNIST runs.
     ema_decay: float = 0.0
+    # "constant" preserves the short-run recipe; "cosine" decays from
+    # learning_rate to min_lr over max_iters for the longer runs.
+    lr_schedule: str = "constant"
+    min_lr: float = 0.0
 
     def __post_init__(self) -> None:
         if self.batch_size < 1:
@@ -64,6 +68,15 @@ class TrainerConfig:
         if not 0.0 <= self.ema_decay < 1.0:
             raise ValueError(
                 f"ema_decay must be in [0, 1), got {self.ema_decay}"
+            )
+        if self.lr_schedule not in {"constant", "cosine"}:
+            raise ValueError(
+                f"unknown lr_schedule {self.lr_schedule!r}; "
+                "expected 'constant' or 'cosine'"
+            )
+        if not 0.0 <= self.min_lr <= self.learning_rate:
+            raise ValueError(
+                f"min_lr must be in [0, learning_rate], got {self.min_lr}"
             )
 
 
@@ -124,6 +137,20 @@ class Trainer:
             len(dataset), (self.config.batch_size,), generator=generator
         )
         return self._collate(dataset, indices)
+
+    def _set_lr(self) -> float:
+        if self.config.lr_schedule == "cosine":
+            import math
+
+            progress = min(1.0, self.step / max(1, self.config.max_iters))
+            lr = self.config.min_lr + 0.5 * (
+                self.config.learning_rate - self.config.min_lr
+            ) * (1.0 + math.cos(math.pi * progress))
+        else:
+            lr = self.config.learning_rate
+        for group in self.optimizer.param_groups:
+            group["lr"] = lr
+        return lr
 
     def _sample_t(self, batch: int) -> torch.Tensor:
         return torch.randint(
@@ -263,6 +290,7 @@ class Trainer:
             logger.on_train_start(self)
 
         while self.step < self.config.max_iters:
+            self._set_lr()
             if self.step % self.config.eval_interval == 0:
                 losses = self.estimate_loss()
                 for logger in self.loggers:
