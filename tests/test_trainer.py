@@ -46,3 +46,38 @@ def test_trainer_runs_and_writes_checkpoint(tmp_path):
         "val_x0_mse",
     }
     assert all(torch.isfinite(torch.tensor(v)) for v in losses.values())
+
+
+def test_cosine_lr_schedule():
+    ds = synthetic_dataset(n=4, image_size=8, channels=1, num_classes=0)
+    model = build_model(
+        "hyper",
+        ImageModelConfig(
+            image_size=8, patch_size=4, n_head=2, n_embd=8, n_layer=1
+        ),
+    )
+    diffusion = GaussianDiffusion(DiffusionConfig(timesteps=10))
+    trainer = Trainer(
+        TrainerConfig(
+            batch_size=2,
+            max_iters=10,
+            eval_interval=10,
+            eval_iters=1,
+            learning_rate=1e-3,
+            min_lr=1e-4,
+            lr_schedule="cosine",
+            sample_interval=0,
+            torch_threads=1,
+        ),
+        model,
+        diffusion,
+        ds,
+        ds,
+    )
+    lrs = []
+    for step in (0, 2, 5, 8, 10):
+        trainer.step = step
+        lrs.append(trainer._set_lr())
+    assert lrs[0] == 1e-3
+    assert lrs[-1] == 1e-4
+    assert all(a >= b for a, b in zip(lrs, lrs[1:]))

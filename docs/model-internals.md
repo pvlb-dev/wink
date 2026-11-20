@@ -164,6 +164,14 @@ class, time rotor, `ln_f` and the head. `HyperDiT` and `RATDiT` only build
 blocks. That keeps the attention comparison controlled: same data, same patches,
 same positions, same time conditioning, same schedule, same seed discipline.
 
+## Training schedule
+
+`TrainerConfig.lr_schedule` is `constant` for the short/M1 runs and `cosine` for
+the longer runs: `lr(t) = min_lr + 0.5*(lr - min_lr)*(1 + cos(pi*t/max_iters))`.
+The default is constant so older configs reproduce. The 20k CIFAR run uses
+1e-3 -> 1e-4 cosine; the 10k runs use constant 1e-3. Both are recorded in the
+config and the report.
+
 ## Invariants
 
 1. Patchify/unpatchify round-trips exactly.

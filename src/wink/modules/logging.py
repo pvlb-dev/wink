@@ -183,6 +183,9 @@ class MLFlowLogger:
             return
         if self.config.log_interval > 0 and trainer.step % self.config.log_interval == 0:
             mlflow.log_metric("train_step_loss", float(loss), step=trainer.step)
+            mlflow.log_metric(
+                "lr", float(trainer.optimizer.param_groups[0]["lr"]), step=trainer.step
+            )
 
     def on_eval(self, trainer, losses) -> None:
         if not self._enabled() or not self.active:

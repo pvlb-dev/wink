@@ -41,10 +41,16 @@ The full tables, failed runs and caveats:
 - **M2 (in progress):** CIFAR-10 class-conditional at 32×32. A 10,000-step
   **hyper** run reached val x0-MSE **0.0347** and **FID 160.36** over 10,000
   samples; RAT-32 now completes the same 10k budget (val 0.0351) after the
-  chunked bidirectional scan fix, with **FID 156.12** on the same protocol. Samples are stylized color/texture scenes, not clean objects. See
+  chunked bidirectional scan fix, with **FID 156.12** on the same protocol.
+  A 20k cosine run reached **0.0326** val x0-MSE at 17k (0.0347 at 20k), but its
+  16k checkpoint's FID was **178.68**, worse than the 10k run's 156.12: more
+  steps refined textures without producing objects. The 10k checkpoint remains
+  the best FID model. Samples are stylized color/texture scenes, not clean
+  objects. See
   [`2026-11-19-cifar10-10k.md`](docs/experiments/2026-11-19-cifar10-10k.md),
   [`2026-11-20-cifar10-rat-chunked.md`](docs/experiments/2026-11-20-cifar10-rat-chunked.md),
   [`2026-11-20-cifar10-head-sweep.md`](docs/experiments/2026-11-20-cifar10-head-sweep.md),
+  [`2026-11-20-cifar10-20k-cosine.md`](docs/experiments/2026-11-20-cifar10-20k-cosine.md),
   and [`2026-11-19-cifar10-smoke.md`](docs/experiments/2026-11-19-cifar10-smoke.md).
   The FIDs are baselines, not competitive CIFAR results.
 - Text conditioning, CelebA and any VAE/latent variant are out of scope for v0.
