@@ -45,8 +45,10 @@ The full tables, failed runs and caveats:
   A 20k cosine run reached **0.0326** val x0-MSE at 17k (0.0347 at 20k), but its
   16k checkpoint's FID was **178.68**, worse than the 10k run's 156.12: more
   steps refined textures without producing objects. The 10k checkpoint remains
-  the best FID model. Samples are stylized color/texture scenes, not clean
-  objects. See
+  the best FID model. Widening the 4-layer model to `n_embd=96` improved FID to
+  **149.60** at 10k steps. The 6-layer depth control was deferred: ~1.5 s/step
+  under the current laptop load, ~4h for the same budget. Samples are stylized
+  color/texture scenes, not clean objects. See
   [`2026-11-19-cifar10-10k.md`](docs/experiments/2026-11-19-cifar10-10k.md),
   [`2026-11-20-cifar10-rat-chunked.md`](docs/experiments/2026-11-20-cifar10-rat-chunked.md),
   [`2026-11-20-cifar10-head-sweep.md`](docs/experiments/2026-11-20-cifar10-head-sweep.md),
