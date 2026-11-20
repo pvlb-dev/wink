@@ -99,8 +99,16 @@ out_t = (S_t ⊗ q_t) * scale
 
 computed as `scan(A) + flip(scan(flip(A))) - A` so every patch sees every other
 patch, decayed by distance, in O(P). No RoPE; the learned 2D position embedding
-carries order. The bidirectional path rejects windows longer than the scan
-chunk, so `block_size` is set to the patch count.
+carries order.
+
+The stock tardits bidirectional path rejects `T > chunk`, where the chunk is
+derived from the trained `min |gamma|`. A 64-token CIFAR run can therefore start
+fine and later fail when gamma decays below the 64-token threshold. WINK replaces
+it with `ChunkedBidirectionalRattention`: the forward and reversed scans are
+split into safe chunks, the fast-weight state is carried between chunks, and the
+usual `S_fwd + S_bwd - A_self` combination is applied. A test checks the chunked
+result against the full scan (max diff ~2e-6) and a 64-token gamma-decayed
+forward. This is how the CIFAR RAT window is supported.
 
 ## Diffusion
 

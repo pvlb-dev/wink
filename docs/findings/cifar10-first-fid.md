@@ -19,12 +19,17 @@ better prior at 64 tokens?
 | reference | 10,000 CIFAR-10 test images |
 | **FID** | **160.36** |
 
+After the chunked-scan fix (#14), RAT-32 completed the same 10k budget:
+val x0-MSE 0.0351 and **FID 156.12** on the same 10k/10k protocol. RAT is
+slightly lower (about 2.6%), within one-seed noise; it is not a decisive win.
+Both numbers are far from competitive CIFAR models.
+
 Published tiny-diffusion CIFAR numbers are roughly two orders of magnitude
 lower. The samples are stylized color/texture scenes, not clean objects.
 
 ## The RAT blocker
 
-RAT-32 **cannot currently do the 64-token CIFAR window**. At step 4000 its
+RAT-32 originally **could not do the 64-token CIFAR window**. At step 4000 its
 bidirectional scan chunk shrank to 63 tokens as `|gamma|` decayed, and the run
 raised:
 
@@ -32,9 +37,10 @@ raised:
 ValueError: bidirectional RAT supports windows up to 63 tokens; got 64
 ```
 
-This is issue [#14](https://git.pvlb.dev/ml-lab/wink/issues/14). The 10k run is
-therefore hyper, not RAT; a RAT-vs-hyper CIFAR claim is blocked until the scan is
-chunked or a documented `gamma_min` floor is adopted.
+This was issue [#14](https://git.pvlb.dev/ml-lab/wink/issues/14), fixed with
+`ChunkedBidirectionalRattention`: the forward and reversed scans carry the
+fast-weight state across safe chunks. The chunked result matches the full scan
+to ~2.3e-6; the 10k CIFAR run now completes.
 
 ## Caveats
 
