@@ -42,6 +42,19 @@ This was issue [#14](https://git.pvlb.dev/ml-lab/wink/issues/14), fixed with
 fast-weight state across safe chunks. The chunked result matches the full scan
 to ~2.3e-6; the 10k CIFAR run now completes.
 
+
+## CIFAR head sweep (10k, same recipe)
+
+| heads | ms/step (bench) | wall | val x0-MSE | FID |
+|---:|---:|---:|---:|---:|
+| 8 | 568 | 114.4 min | 0.0356 | not run |
+| 16 | 350 | 71.7 min | 0.0353 | not run |
+| 32 | 356 | 59.7 min | **0.0351** | **156.12** |
+
+Head count changes speed more than sample character: the RAT-8/16/32 sample rows
+are nearly identical at this scale. h32 stays the CPU pick. One seed; wall times
+were taken under variable laptop load.
+
 ## Caveats
 
 - One seed, one 10k-step CPU budget; no hyperparameter sweep at 32×32.
