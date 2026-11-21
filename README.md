@@ -47,8 +47,11 @@ The full tables, failed runs and caveats:
   steps refined textures without producing objects. The 10k checkpoint remains
   the best FID model. Widening the 4-layer model to `n_embd=96` improved FID to
   **149.60** at 10k steps. The 6-layer depth control was deferred: ~1.5 s/step
-  under the current laptop load, ~4h for the same budget. Samples are stylized
-  color/texture scenes, not clean objects. See
+  under the current laptop load, ~4h for the same budget. Level 2 (quaternion)
+  and level 3 (octonion) both **work**: level 2 3k val 0.0403 vs complex 0.0426
+  with 2× params; level 3 1k works but is ~14× the cost at batch 64. See
+  [`2026-11-21-cifar10-levels.md`](docs/experiments/2026-11-21-cifar10-levels.md).
+  Samples are stylized color/texture scenes, not clean objects. See
   [`2026-11-19-cifar10-10k.md`](docs/experiments/2026-11-19-cifar10-10k.md),
   [`2026-11-20-cifar10-rat-chunked.md`](docs/experiments/2026-11-20-cifar10-rat-chunked.md),
   [`2026-11-20-cifar10-head-sweep.md`](docs/experiments/2026-11-20-cifar10-head-sweep.md),
@@ -104,7 +107,8 @@ x0 [B,C,H,W] -> 4x4 patches -> complex patch embedding
 - **Conditioning:** the diffusion-step rotor rotates every patch token; CIFAR adds
   a learned class embedding. No AdaLN or classifier-free guidance in v0.
 - **Dimensions:** `level` (complex, quaternion, …), `n_embd`, `n_head` and
-  `n_layer` are config fields. Level 1 is the CPU default; level 2 is smoke-tested.
+  `n_layer` are config fields. Level 1 is the CPU default; levels 2/3 are
+  supported and have been trained on CIFAR (level 3 is CPU-expensive).
 
 The detailed design, invariants and port map are in
 [`docs/model-internals.md`](docs/model-internals.md); the repo map is
