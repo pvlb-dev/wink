@@ -168,6 +168,7 @@ class GaussianDiffusion(nn.Module):
         eta: float | None = None,
         seed: int | None = None,
         device: torch.device | str | None = None,
+        guidance: float = 1.0,
     ) -> torch.Tensor:
         """DDIM/DDPM sampling; returns raw x0 (no clamp, no display mapping)."""
         if steps is None:
@@ -178,6 +179,8 @@ class GaussianDiffusion(nn.Module):
             eta = 1.0 if self.config.sampler == "ddpm" else self.config.eta
         if not 0.0 <= eta <= 1.0:
             raise ValueError(f"eta must be in [0, 1], got {eta}")
+        if guidance < 0.0:
+            raise ValueError(f"guidance must be >= 0, got {guidance}")
 
         if device is None:
             device = next(model.parameters()).device
@@ -201,7 +204,12 @@ class GaussianDiffusion(nn.Module):
             t_batch = torch.full(
                 (shape[0],), t_curr, device=device, dtype=torch.long
             )
-            pred = model(x, t_batch, y)
+            if guidance != 1.0 and y is not None:
+                pred_cond = model(x, t_batch, y)
+                pred_null = model(x, t_batch, None)
+                pred = pred_null + guidance * (pred_cond - pred_null)
+            else:
+                pred = model(x, t_batch, y)
             x0, eps = self._x0_and_eps(x, t_batch, pred)
 
             if i == len(times) - 1:

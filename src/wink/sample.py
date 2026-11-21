@@ -41,6 +41,12 @@ def main() -> None:
     )
     parser.add_argument("--seed", type=int, default=0)
     parser.add_argument(
+        "--guidance",
+        type=float,
+        default=1.0,
+        help="Classifier-free guidance scale (1.0 = off)",
+    )
+    parser.add_argument(
         "--classes",
         type=str,
         default=None,
@@ -97,6 +103,7 @@ def main() -> None:
         eta=args.eta,
         seed=args.seed,
         device=device,
+        guidance=args.guidance,
     )
     out_dir = os.path.dirname(args.out)
     if out_dir:

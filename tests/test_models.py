@@ -100,3 +100,14 @@ def test_additive_time_conditioning_variants():
             b = model(x, torch.tensor([7]))
         assert a.shape == x.shape
         assert not torch.allclose(a, b), f"{mode} ignores time"
+
+
+
+def test_channel_conditioning_null_label():
+    x = torch.randn(2, 1, 8, 8)
+    cfg = _cfg(num_classes=2, class_conditioning="channel", cond_channels=2)
+    model = build_model("hyper", cfg).eval()
+    with torch.no_grad():
+        out = model(x, torch.tensor([0, 0]), None)
+    assert out.shape == x.shape
+    assert torch.isfinite(out).all()
