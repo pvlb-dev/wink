@@ -12,11 +12,13 @@ tiny CPU release.
 - Transparent-background MNIST: `wsample --alpha` renders white ink on RGBA,
   and `docs/scripts/mnist_to_alpha.py` exports the real dataset as RGBA PNGs.
   MNIST intensity is already an alpha mask, so the existing checkpoint is used.
+- Promptable MNIST: class-conditional RAT-32 with a one-hot input channel,
+  10% class dropout and classifier-free guidance (`wsample --guidance`).
 - CIFAR-10 class-conditional runs, FID harness, head/width/level experiments
   (post-0.1 research, documented in `docs/experiments/`).
 
 ### Pending for 0.1
 
 - Browser JS toy: level-1 RAT inference from exported weights, drawing alpha on
-  a canvas.
+  a canvas and a digit prompt/guidance control.
 - Release packaging/tag and final quickstart polish.

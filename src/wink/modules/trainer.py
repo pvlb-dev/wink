@@ -33,6 +33,9 @@ class TrainerConfig:
     # EMA of the weights is cheap and usually improves diffusion samples. 0
     # disables it; 0.999 is the default for the extended MNIST runs.
     ema_decay: float = 0.0
+    # Replace a fraction of training class labels with a null label so the
+    # model learns an unconditional branch for classifier-free guidance.
+    class_dropout: float = 0.0
     # "constant" preserves the short-run recipe; "cosine" decays from
     # learning_rate to min_lr over max_iters for the longer runs.
     lr_schedule: str = "constant"
@@ -64,6 +67,10 @@ class TrainerConfig:
         if self.torch_threads < 1:
             raise ValueError(
                 f"torch_threads must be >= 1, got {self.torch_threads}"
+            )
+        if not 0.0 <= self.class_dropout < 1.0:
+            raise ValueError(
+                f"class_dropout must be in [0, 1), got {self.class_dropout}"
             )
         if not 0.0 <= self.ema_decay < 1.0:
             raise ValueError(
@@ -119,7 +126,7 @@ class Trainer:
             int(config.seed) + 2
         )
 
-    def _collate(self, dataset, indices: torch.Tensor):
+    def _collate(self, dataset, indices: torch.Tensor, train: bool = False):
         if hasattr(dataset, "images"):
             x0 = dataset.images[indices]
             labels = dataset.labels[indices]
@@ -128,6 +135,10 @@ class Trainer:
             x0 = torch.stack([item[0] for item in batch])
             labels = torch.stack([item[1] for item in batch])
         y = labels if self.model.config.num_classes > 0 else None
+        if y is not None and train and self.config.class_dropout > 0:
+            drop = torch.rand(y.shape, generator=self._train_gen) < self.config.class_dropout
+            y = y.clone()
+            y[drop] = -1
         return x0.to(self.device), (y.to(self.device) if y is not None else None)
 
     def get_batch(self, split: str):
@@ -136,7 +147,7 @@ class Trainer:
         indices = torch.randint(
             len(dataset), (self.config.batch_size,), generator=generator
         )
-        return self._collate(dataset, indices)
+        return self._collate(dataset, indices, train=split == "train")
 
     def _set_lr(self) -> float:
         if self.config.lr_schedule == "cosine":

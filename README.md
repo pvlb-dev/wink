@@ -59,6 +59,25 @@ Details and limits: [`docs/findings/alpha-mnist.md`](docs/findings/alpha-mnist.m
 The browser (JS) toy is the next milestone; the alpha renderer is the artifact it
 will produce.
 
+## Promptable digits (0.1)
+
+The 0.1 model is **class-conditional and promptable**. A 10-channel one-hot digit
+plane is concatenated to the noisy image at every DDIM step; 10% class dropout
+gives a null branch, and classifier-free guidance (`--guidance 5`) makes the
+digit obey the prompt:
+
+```bash
+.venv/bin/wsample -c examples/configs/mnist_rat_cond_cfg_h32.yaml \
+  --checkpoint examples/saved/mnist_rat_cond_cfg_h32/final.pt \
+  -n 80 --classes 0,1,2,3,4,5,6,7,8,9 \
+  --guidance 5 --alpha --nrow 8 -o prompted.png
+```
+
+![Prompted MNIST digits 0-9 on a transparent background](docs/assets/mnist/prompted_digits_preview.png)
+
+This is digit-class conditioning, not free text; the web UI maps “seven” to
+class 7. Details: [`docs/experiments/2026-11-21-mnist-promptable.md`](docs/experiments/2026-11-21-mnist-promptable.md).
+
 ## Status
 
 - **M1 (done):** MNIST, both denoisers, matched CPU budget, sample grids, decision
@@ -87,9 +106,9 @@ will produce.
   [`2026-11-20-cifar10-20k-cosine.md`](docs/experiments/2026-11-20-cifar10-20k-cosine.md),
   and [`2026-11-19-cifar10-smoke.md`](docs/experiments/2026-11-19-cifar10-smoke.md).
   The FIDs are baselines, not competitive CIFAR results.
-- **0.1 (in progress):** tiny CPU MNIST release with the transparent-background
-  demo. Python alpha rendering and the dataset exporter are done; the JS toy and
-  release packaging are next.
+- **0.1 (in progress):** tiny CPU MNIST release with transparent-background and
+  promptable digits. Alpha rendering, the dataset exporter, and the CFG
+  conditional model are done; the JS toy and release packaging are next.
 - Text conditioning, CelebA and any VAE/latent variant are out of scope for v0.
 
 Training on Kaggle/Colab is currently blocked by the tesseract runs, so all

@@ -13,6 +13,7 @@ from dataclasses import asdict, dataclass
 
 import torch
 import torch.nn as nn
+import torch.nn.functional as F
 
 from tardits.modules import HyperRMSNorm
 from wink.modules.diffusion import AdditiveTimeEmbedding, TimeRotorEmbedding
@@ -34,6 +35,13 @@ class ImageModelConfig:
     n_layer: int = 4
     dropout: float = 0.0
     num_classes: int = 0
+    # "additive" adds a learned class code to every patch token; "channel"
+    # appends a one-hot class plane to the input image (strongest, no learned
+    # code, and the right fit for classifier-free guidance).
+    class_conditioning: str = "additive"
+    # Extra input channels used by "channel" conditioning; set equal to
+    # num_classes for a one-hot plane.
+    cond_channels: int = 0
     time_conditioning: str = "rotor"  # rotor | additive | rotor+additive | none
     pos_embed: str = "learned2d"  # learned2d | none
 
@@ -71,6 +79,19 @@ class ImageModelConfig:
             raise ValueError(
                 f"num_classes must be >= 0, got {self.num_classes}"
             )
+        if self.cond_channels < 0:
+            raise ValueError(
+                f"cond_channels must be >= 0, got {self.cond_channels}"
+            )
+        if self.cond_channels > 0 and self.num_classes == 0:
+            raise ValueError("cond_channels > 0 requires num_classes > 0")
+        if self.class_conditioning == "channel" and self.cond_channels == 0:
+            raise ValueError("class_conditioning='channel' requires cond_channels > 0")
+        if self.class_conditioning not in {"additive", "channel"}:
+            raise ValueError(
+                f"unknown class_conditioning {self.class_conditioning!r}; "
+                "expected 'additive' or 'channel'"
+            )
         if self.time_conditioning not in {
             "rotor",
             "additive",
@@ -94,6 +115,12 @@ class ImageModelConfig:
     @property
     def patch_dim(self) -> int:
         return self.in_channels * self.patch_size * self.patch_size
+
+    @property
+    def input_patch_dim(self) -> int:
+        return (
+            self.in_channels + self.cond_channels
+        ) * self.patch_size * self.patch_size
 
     @property
     def grid_size(self) -> int:
@@ -188,10 +215,11 @@ class ImageTransformerBase(nn.Module):
         self.num_patches = config.num_patches
         self.grid_size = config.grid_size
         self.patch_dim = config.patch_dim
+        self.input_patch_dim = config.input_patch_dim
 
         self.patchify = Patchify(config.patch_size)
         self.patch_embed = PatchEmbed(
-            self.patch_dim, config.n_embd, config.level
+            self.input_patch_dim, config.n_embd, config.level
         )
         self.pos_embed = (
             FactorizedPositionEmbedding(
@@ -203,9 +231,11 @@ class ImageTransformerBase(nn.Module):
             if config.pos_embed == "learned2d"
             else None
         )
+        self.class_conditioning = config.class_conditioning
+        self.cond_channels = config.cond_channels
         self.class_embed = (
             ClassEmbedding(config.num_classes, config.n_embd, config.level)
-            if config.num_classes > 0
+            if config.num_classes > 0 and config.class_conditioning != "channel"
             else None
         )
         self.time_rotor = (
@@ -242,6 +272,20 @@ class ImageTransformerBase(nn.Module):
                 "timesteps must be [B] and match the images; got "
                 f"{tuple(timesteps.shape)} for batch {x.shape[0]}"
             )
+        if self.cond_channels > 0:
+            batch = x.shape[0]
+            plane = torch.zeros(
+                batch, self.config.num_classes, x.shape[-2], x.shape[-1],
+                device=x.device, dtype=x.dtype,
+            )
+            if y is not None:
+                valid = y >= 0
+                if valid.any():
+                    codes = F.one_hot(
+                        y[valid].long(), self.config.num_classes
+                    ).to(x.dtype)
+                    plane[valid] = codes[:, :, None, None]
+            x = torch.cat([x, plane], dim=1)
         h = self.patch_embed(self.patchify(x))
         if self.pos_embed is not None:
             h = h + self.pos_embed().unsqueeze(0)

@@ -15,6 +15,8 @@ length.
 - [`repo-map.md`](repo-map.md) — file tree and commands.
 - [`findings/alpha-mnist.md`](findings/alpha-mnist.md)
   — transparent-background MNIST (`wsample --alpha`, exporter).
+- [`experiments/2026-11-21-mnist-promptable.md`](experiments/2026-11-21-mnist-promptable.md)
+  — promptable digits via channel conditioning + CFG.
 - [`findings/mnist-hyper-vs-rat.md`](findings/mnist-hyper-vs-rat.md) — the M1
   decision note (written after the run).
 - [`findings/cifar10-first-fid.md`](findings/cifar10-first-fid.md) — the first
