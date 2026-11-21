@@ -31,6 +31,8 @@ length.
   — width/depth capacity sweep; 4L×96 FID 149.60.
 - [`experiments/2026-11-21-cifar10-levels.md`](experiments/2026-11-21-cifar10-levels.md)
   — quaternion/octonion first runs.
+- [`experiments/2026-11-21-cifar10-param-matched.md`](experiments/2026-11-21-cifar10-param-matched.md)
+  — level 1 vs level 2 at ~250k params.
 
 ## Evidence so far
 
@@ -41,7 +43,7 @@ length.
 | M2 head sweep | Does head count change CIFAR sample character? | **done at 10k**: h32 fastest, quality saturates; rows nearly identical; FID 156.12 only for h32 |
 | M2 long run | Does a 20k cosine run learn objects? | **no**: val 0.0326 at 17k, but FID 178.68 at 16k vs 156.12 at 10k; capacity, not steps |
 | M2 capacity | Does width/depth help? | **width yes**: 4L×96 val 0.0330, FID 149.60 vs 156.12; 6L depth control deferred (CPU) |
-| M2 levels | Do quaternion/octonion image diffusion work? | **yes**: level 2 3k val 0.0403 (500k params), level 3 1k works (1M, 14× cost); not parameter-matched yet |
+| M2 levels | Do quaternion/octonion image diffusion work? | **yes**: level 2 3k val 0.0403 (500k); param-matched 245k vs 250k: 0.0409 vs 0.0426 (~4% better, 2.6× slower); level 3 1k works (1M, 14× cost) |
 | M2 | Can it produce a reportable CIFAR-10 FID at 32×32? | hyper 10k: val 0.0347, **FID 160.36**; RAT 10k: val 0.0351, **FID 156.12** (chunked scan fix); both far from published numbers, one seed |
 
 No number in this repo is a claim until the run report states the budget and the
