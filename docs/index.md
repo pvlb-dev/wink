@@ -13,6 +13,8 @@ length.
 - [`model-internals.md`](model-internals.md) — algebra, patches, diffusion,
   conditioning, invariants.
 - [`repo-map.md`](repo-map.md) — file tree and commands.
+- [`findings/alpha-mnist.md`](findings/alpha-mnist.md)
+  — transparent-background MNIST (`wsample --alpha`, exporter).
 - [`findings/mnist-hyper-vs-rat.md`](findings/mnist-hyper-vs-rat.md) — the M1
   decision note (written after the run).
 - [`findings/cifar10-first-fid.md`](findings/cifar10-first-fid.md) — the first
