@@ -1,0 +1,10 @@
+{
+  "checkpoint": "examples/saved/cifar10_rat_l2_w44_10k/final.pt",
+  "arch": "rat",
+  "level": 2,
+  "samples": 10000,
+  "steps": 50,
+  "seed": 0,
+  "real_images": 10000,
+  "fid": 170.03995632027483
+}
