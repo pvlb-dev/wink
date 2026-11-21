@@ -1,3 +1,9 @@
+from wink.modules.alpha import (
+    ink_to_alpha,
+    rgba_from_ink,
+    save_alpha_pngs,
+    save_alpha_sheet,
+)
 from wink.modules.data import DataConfig, ImageDataset, load_dataset, synthetic_dataset
 from wink.modules.diffusion import (
     AdditiveTimeEmbedding,
@@ -15,6 +21,10 @@ from wink.modules.patchify import (
 from wink.modules.trainer import Trainer, TrainerConfig
 
 __all__ = [
+    "ink_to_alpha",
+    "rgba_from_ink",
+    "save_alpha_pngs",
+    "save_alpha_sheet",
     "DataConfig",
     "ImageDataset",
     "load_dataset",

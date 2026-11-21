@@ -33,6 +33,32 @@ The full tables, failed runs and caveats:
 
 ![RAT-16 samples after 3,000 CPU steps](docs/assets/mnist/rat_h16_final_64.png)
 
+## Alpha digits (0.1 eyecatcher)
+
+MNIST is white ink on black, so the grayscale intensity is already an alpha
+mask. The existing RAT-16 checkpoint is therefore already an alpha model; no
+dataset edit or retraining is needed. Render white ink on a transparent
+background:
+
+```bash
+.venv/bin/wsample -c examples/configs/mnist_rat.yaml \
+  --checkpoint examples/saved/mnist_rat_h16/final.pt \
+  -n 64 --alpha -o alpha.png
+```
+
+It writes the RGBA sheet plus a checkerboard preview. To export the real MNIST
+test set as RGBA PNGs (no GIMP, no manual editing):
+
+```bash
+.venv/bin/python docs/scripts/mnist_to_alpha.py --split test
+```
+
+![Generated MNIST digits on a transparent background](docs/assets/mnist/alpha_digits_preview.png)
+
+Details and limits: [`docs/findings/alpha-mnist.md`](docs/findings/alpha-mnist.md).
+The browser (JS) toy is the next milestone; the alpha renderer is the artifact it
+will produce.
+
 ## Status
 
 - **M1 (done):** MNIST, both denoisers, matched CPU budget, sample grids, decision
@@ -61,6 +87,9 @@ The full tables, failed runs and caveats:
   [`2026-11-20-cifar10-20k-cosine.md`](docs/experiments/2026-11-20-cifar10-20k-cosine.md),
   and [`2026-11-19-cifar10-smoke.md`](docs/experiments/2026-11-19-cifar10-smoke.md).
   The FIDs are baselines, not competitive CIFAR results.
+- **0.1 (in progress):** tiny CPU MNIST release with the transparent-background
+  demo. Python alpha rendering and the dataset exporter are done; the JS toy and
+  release packaging are next.
 - Text conditioning, CelebA and any VAE/latent variant are out of scope for v0.
 
 Training on Kaggle/Colab is currently blocked by the tesseract runs, so all

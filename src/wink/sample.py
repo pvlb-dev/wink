@@ -11,6 +11,7 @@ import yaml
 from tardits.modules import get_device
 from wink.models import load_checkpoint
 from wink.modules import DiffusionConfig, GaussianDiffusion, save_image_grid
+from wink.modules.alpha import save_alpha_sheet
 
 
 def _parse_classes(value: str, num_classes: int) -> list[int]:
@@ -47,6 +48,17 @@ def main() -> None:
     )
     parser.add_argument(
         "--nrow", type=int, default=8, help="Grid rows"
+    )
+    parser.add_argument(
+        "--alpha",
+        action="store_true",
+        help="Render an RGBA sheet: white ink on transparent background",
+    )
+    parser.add_argument(
+        "--alpha-scale",
+        type=int,
+        default=6,
+        help="Nearest-neighbour upscale for the alpha sheet",
     )
     parser.add_argument("-o", "--out", type=str, default="samples.png")
     args = parser.parse_args()
@@ -89,6 +101,24 @@ def main() -> None:
     out_dir = os.path.dirname(args.out)
     if out_dir:
         os.makedirs(out_dir, exist_ok=True)
+
+    if args.alpha:
+        if model_cfg.in_channels != 1:
+            raise SystemExit(
+                "--alpha is only implemented for 1-channel (grayscale) models"
+            )
+        if not args.out.lower().endswith(".png"):
+            args.out = os.path.splitext(args.out)[0] + ".png"
+        saved, preview = save_alpha_sheet(
+            images,
+            args.out,
+            nrow=args.nrow,
+            scale=args.alpha_scale,
+        )
+        print(f"saved {args.num} alpha samples -> {saved}")
+        print(f"checkerboard preview -> {preview}")
+        return
+
     saved = save_image_grid(
         images, args.out, nrow=args.nrow, title=f"{arch} — level {model_cfg.level}"
     )
