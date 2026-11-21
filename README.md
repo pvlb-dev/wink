@@ -51,7 +51,9 @@ The full tables, failed runs and caveats:
   and level 3 (octonion) both **work**: level 2 3k val 0.0403 vs complex 0.0426
   with 2× params; level 3 1k works but is ~14× the cost at batch 64. See
   [`2026-11-21-cifar10-levels.md`](docs/experiments/2026-11-21-cifar10-levels.md).
-  Samples are stylized color/texture scenes, not clean objects. See
+  With parameters matched (~250k), quaternion level 2 is ~4% better on val than
+  complex level 1 at 3k, but ~2.6× slower. Samples are stylized color/texture
+  scenes, not clean objects. See
   [`2026-11-19-cifar10-10k.md`](docs/experiments/2026-11-19-cifar10-10k.md),
   [`2026-11-20-cifar10-rat-chunked.md`](docs/experiments/2026-11-20-cifar10-rat-chunked.md),
   [`2026-11-20-cifar10-head-sweep.md`](docs/experiments/2026-11-20-cifar10-head-sweep.md),
