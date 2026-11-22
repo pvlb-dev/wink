@@ -1,0 +1,59 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>WINK — promptable MNIST</title>
+  <link rel="stylesheet" href="/static/style.css" />
+</head>
+<body>
+  <main class="card">
+    <header>
+      <div class="eyebrow">ML-LAB · WINK</div>
+      <h1>Promptable <span>MNIST</span></h1>
+      <p class="sub">Complex-valued RAT diffusion. Pick a digit; the model draws it on a transparent background.</p>
+    </header>
+
+    <section class="stage">
+      <div class="canvas-wrap" id="canvas-wrap">
+        <canvas id="canvas" width="280" height="280" aria-label="generated digit"></canvas>
+        <div class="empty" id="empty">press generate</div>
+      </div>
+      <div class="meta">
+        <div><span>digit</span><strong id="meta-digit">7</strong></div>
+        <div><span>guidance</span><strong id="meta-guidance">5</strong></div>
+        <div><span>seed</span><strong id="meta-seed">—</strong></div>
+        <div><span>time</span><strong id="meta-ms">—</strong></div>
+      </div>
+    </section>
+
+    <section class="controls">
+      <div class="digits" id="digits" role="group" aria-label="digit">
+        <button data-digit="0">0</button><button data-digit="1">1</button>
+        <button data-digit="2">2</button><button data-digit="3">3</button>
+        <button data-digit="4">4</button><button data-digit="5">5</button>
+        <button data-digit="6">6</button><button data-digit="7" class="active">7</button>
+        <button data-digit="8">8</button><button data-digit="9">9</button>
+      </div>
+
+      <label class="slider">
+        <span>guidance <output id="guidance-value">5</output></span>
+        <input id="guidance" type="range" min="1" max="10" step="1" value="5" />
+      </label>
+
+      <div class="actions">
+        <button id="generate" class="primary">Generate</button>
+        <button id="random" class="ghost" title="random digit + seed">Random</button>
+        <a id="download" class="ghost disabled" download="wink-digit.png">Download PNG</a>
+      </div>
+    </section>
+
+    <footer>
+      <span>RAT-32 · 10k steps · 261k params</span>
+      <span class="dot">transparent RGBA</span>
+    </footer>
+    <div class="status" id="status"></div>
+  </main>
+  <script src="/static/app.js"></script>
+</body>
+</html>

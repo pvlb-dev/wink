@@ -14,6 +14,8 @@ tiny CPU release.
   MNIST intensity is already an alpha mask, so the existing checkpoint is used.
 - Promptable MNIST: class-conditional RAT-32 with a one-hot input channel,
   10% class dropout and classifier-free guidance (`wsample --guidance`).
+- A Flask+JS promptable toy in `web/`: digit buttons, guidance slider, transparent
+  RGBA output. Server-side inference for 0.1; pure-JS inference is next.
 - CIFAR-10 class-conditional runs, FID harness, head/width/level experiments
   (post-0.1 research, documented in `docs/experiments/`).
 

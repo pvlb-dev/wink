@@ -47,23 +47,25 @@ RAT-32, 4 layers, 49 tokens, T=200, x0, EMA 0.999, batch 64, constant lr 1e-3.
 | additive class code | 10,000 | 0.0448 | no |
 | channel one-hot | 3,000 | 0.0566 | partly |
 | channel one-hot | 10,000 | 0.0436 | partly |
-| **channel + class dropout + CFG** | **3,000** | **0.0580** | **yes** |
+| channel + class dropout + CFG | 3,000 | 0.0580 | yes |
+| **channel + class dropout + CFG** | **10,000** | **0.0435** | **yes** |
 
-The CFG 3k run is the 0.1 model: 261,121 params, 14.5 min CPU. The 10k channel
-checkpoint has the best val but was trained without class dropout, so it cannot
-do CFG; it remains a baseline. A 10k CFG run is the next quality step if needed.
+The **10k CFG run is the 0.1 model**: 261,121 params, 46 min CPU, val 0.0435.
+It is the best promptable checkpoint and the one used for the web demo. The 3k
+CFG run (14.5 min) was the first working promptable model; the 10k channel
+checkpoint without class dropout cannot CFG.
 
 ## Prompted result
 
 8 samples per digit, digits 0–9 across the columns, `guidance=5`:
 
-![Prompted MNIST digits 0-9 on a transparent background](../assets/mnist/prompted_digits_preview.png)
+![Prompted MNIST digits 0-9 on a transparent background](../assets/mnist/prompted_digits_10k_preview.png)
 
 Command:
 
 ```bash
-.venv/bin/wsample -c examples/configs/mnist_rat_cond_cfg_h32.yaml \
-  --checkpoint examples/saved/mnist_rat_cond_cfg_h32/final.pt \
+.venv/bin/wsample -c examples/configs/mnist_rat_cond_cfg_h32_10k.yaml \
+  --checkpoint examples/saved/mnist_rat_cond_cfg_h32_10k/final.pt \
   -n 80 --classes 0,1,2,3,4,5,6,7,8,9 \
   --guidance 5 --alpha --nrow 8 -o prompted.png
 ```
@@ -74,7 +76,7 @@ cost of diversity.
 
 ## Limits
 
-- 3k steps, 0.26M params; digits are readable but rough.
+- 10k steps, 0.26M params; digits are readable but still rough.
 - White ink only; colour needs the later RGBA model (#20).
 - Guidance doubles the denoiser calls per step, which matters for the JS toy but
   is still cheap at 49 tokens.
@@ -83,8 +85,8 @@ cost of diversity.
 
 ## Artifacts
 
-- MLflow: query `wink-mnist` for `rat-cond-cfg-h32-x0-t200-ema`.
-- Config: `examples/configs/mnist_rat_cond_cfg_h32.yaml`.
-- Grid: `docs/assets/mnist/prompted_digits.png` + checkerboard preview.
+- MLflow: `3998a3efadda46789c2d2dc26796398f` (`rat-cond-cfg-h32-x0-t200-ema-10k`).
+- Config: `examples/configs/mnist_rat_cond_cfg_h32_10k.yaml`.
+- Grid: `docs/assets/mnist/prompted_digits_10k.png` + checkerboard preview.
 - Failed variants: `mnist_rat_cond_h32*` (additive), `mnist_rat_cond_channel_h32*`
   (channel without CFG).
