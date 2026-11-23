@@ -10,6 +10,14 @@ a full complex softmax transformer (`hyper`) or the RAT fast-weight memory
 (`rat`). There is **no autoencoder**; at this resolution diffusion runs directly
 in pixel space, so a bad sample is the denoiser's fault and not a decoder's.
 
+> **image geneRATion** — the RAT from TARDITS, retargeted from tokens to pixels.
+
+The RAT block and hypercomplex layers come from
+[TARDITS](https://git.pvlb.dev/ml-lab/tardits) (`tardits>=0.3.0`). It is the
+same RAT family, not the same model: WINK adds 2D patch tokens, a diffusion-step
+rotor, class conditioning and a pixel head. The 261k promptable checkpoint here
+is a WINK model, not the 100M TARDITS base.
+
 The research question for the first milestone was deliberately narrow:
 
 > Does a complex-valued diffusion transformer learn images at all, and which
