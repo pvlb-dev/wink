@@ -79,9 +79,9 @@ This is digit-class conditioning, not free text; the web UI maps “seven” to
 class 7. Details: [`docs/experiments/2026-11-21-mnist-promptable.md`](docs/experiments/2026-11-21-mnist-promptable.md).
 
 A working browser toy lives in [`web/`](web/README.md): pick a digit, set
-guidance, get a transparent RGBA sample. It is a plain JS UI plus a small Flask
-`/api/sample` bridge for 0.1; web-Deeps can lift both into flango/web-frontend.
-The pure-JS level-1 RAT inference is the next step.
+guidance, get a transparent RGBA sample. It is **pure JS** — a level-1 RAT
+forward + DDIM in a Web Worker, with no server inference and no build step.
+web-Deeps can lift the static files into flango/web-frontend.
 
 ## Status
 
@@ -113,7 +113,7 @@ The pure-JS level-1 RAT inference is the next step.
   The FIDs are baselines, not competitive CIFAR results.
 - **0.1 (in progress):** tiny CPU MNIST release with transparent-background and
   promptable digits. Alpha rendering, the dataset exporter, the 10k CFG model and
-  a working Flask+JS toy are done; pure-JS inference and release packaging next.
+  a working pure-JS toy are done; release packaging is next.
 - Text conditioning, CelebA and any VAE/latent variant are out of scope for v0.
 
 Training on Kaggle/Colab is currently blocked by the tesseract runs, so all
