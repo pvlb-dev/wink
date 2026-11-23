@@ -1,68 +1,64 @@
-# WINK web toy — promptable MNIST
+# WINK web toy — promptable MNIST, pure JS
 
-A small browser toy: pick a digit, move the guidance slider, get a transparent
-RGBA digit. This is the 0.1 bridge; web-Deeps can lift the route and static files
-into the flango/web-frontend app.
+Pick a digit; a level-1 complex RAT denoiser runs **entirely in the browser** and
+draws a 28×28 digit with a transparent background. No server inference, no
+Python at runtime, no build step.
 
-## Run locally
+## Run
 
 From the repository root:
 
 ```bash
-.venv/bin/python web/server.py
+python -m http.server 5001 -d web
 # http://127.0.0.1:5001
 ```
 
-The server loads
-`examples/saved/mnist_rat_cond_cfg_h32_10k/final.pt` once. Override with
-`WINK_CHECKPOINT=/path/to/checkpoint.pt`; `WINK_STEPS` (default 50) and
-`WINK_THREADS` (default 4) are also env vars.
+The first load fetches `static/weights.json` (5.2 MB); after that the model is in the
+page. Denoising runs in a Web Worker so the UI stays responsive; a sample takes
+roughly 2–4 s on a laptop.
 
-## API
+Regenerate the bundle after training:
 
-`POST /api/sample`
-
-```json
-{"digit": 7, "guidance": 5, "seed": 42}
+```bash
+.venv/bin/python web/export_weights.py
 ```
 
-Response:
+It reads `examples/saved/mnist_rat_cond_cfg_h32_10k/final.pt` by default and
+writes `web/static/weights.json`. Override with `--checkpoint`.
 
-```json
-{
-  "png": "data:image/png;base64,...",
-  "digit": 7,
-  "guidance": 5.0,
-  "seed": 42,
-  "steps": 50,
-  "ms": 1195.2
-}
-```
+## Files
 
-`png` is a 28×28 **RGBA** PNG: white ink, transparent background. The browser
-upscales it with nearest-neighbour on a CSS checkerboard. `guidance` is clamped
-to 1..20; 5 is the 0.1 default. A request takes ~1.2 s on t14 CPU.
+| file | role |
+|---|---|
+| `static/wink.js` | pure-JS level-1 RAT forward + DDIM + classifier-free guidance |
+| `static/worker.js` | loads the weights once and runs `generate()` off the main thread |
+| `static/app.js` | digit/guidance UI, canvas compositing, PNG download |
+| `export_weights.py` | PyTorch checkpoint → JS JSON bundle |
 
-`GET /health` returns the loaded checkpoint and arch.
+The JS engine mirrors the PyTorch forward exactly (verified max abs error
+~0.003 on a fixed forward, ~0.009 over a full 50-step DDIM trajectory, float32
+rounding only).
 
-## web-frontend integration
+## Integration notes for web-Deeps
 
-The JS is plain ES modules-free JS; no build step.
+The toy is plain HTML/CSS/JS; the only requirement is that `weights.json` and
+`static/` are served from the same origin.
 
-1. Copy `web/static/` into the Flask static folder.
-2. Copy `index.html` into the template that should host the toy, fixing the
-   `/static/...` paths.
-3. Add the `/api/sample` route from `server.py` to the Flask app. The route is
-   thread-safe via a `Lock`; keep one model instance per process.
-4. Set `WINK_CHECKPOINT` to the deployed checkpoint path.
+1. Copy `index.html` and `static/` into the Flask static/template layout; keep
+   `static/weights.json` next to `worker.js` (the worker fetches it relative to
+   itself).
+2. Fix the absolute `/static/...` paths if the app mounts the toy under a prefix.
+3. `new Worker("/static/worker.js")` must be same-origin; no CORS or API route
+   needed.
+4. No SQLAlchemy, auth or database changes.
 
-No SQLAlchemy, database or auth changes are needed for the toy. If the site is
-multi-worker, either pin the route to one worker or load the model lazily per
-worker; inference is ~1.2 s and CPU-bound.
+The browser model is level 1 only. The export script refuses non-level-1
+checkpoints. The weights are the 10k CFG model: 261k params, 4 layers, 32 heads.
+The digit is a 10-channel one-hot plane and guidance is 5 by default; both are
+inside the JS engine.
 
-## Why server-side first
+## Future
 
-The 0.1 route is Flask + PyTorch; the browser only draws the returned RGBA PNG.
-The pure-JS version (weights + level-1 RAT forward in the browser) is the next
-step. It needs an exported weight bundle, a JS complex/RAT implementation and a
-DDIM loop; the alpha and prompt UI here are already the right shape.
+This is deliberately a single-file inference engine, not a framework. A future
+version can add a text-to-class prompt parser ("seven" → 7), colour strokes, or
+more checkpoints; the RAT math and weight format stay the same.
