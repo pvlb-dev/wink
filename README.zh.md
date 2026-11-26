@@ -16,7 +16,7 @@
 
 ### 欢迎来到 **WINK**，一个复值图像生成的微型实验室！
 
-**v0.1.0（开发中）** 是一个**可提示（promptable）MNIST** 扩散模型，可在笔记本 CPU 上运行，
+**v0.1.1** 是一个**可提示（promptable）MNIST** 扩散模型，可在笔记本 CPU 上运行，
 在**透明背景**上用白色墨水作画，并**完全在浏览器中**生成。选一个数字、设定 guidance、
 得到一个数字。261k 参数、4 层、RAT-32 —— 没有 VAE、没有 latent 解码器、没有服务器。
 
@@ -49,6 +49,16 @@ python -m http.server 5001 -d web
 参见 [`web/README.md`](web/README.md)。
 
 ### 安装
+
+从 PyPI 安装——导入名仍为 `wink`：
+
+```bash
+pip install wink-diffusion
+# 或
+uv add wink-diffusion
+```
+
+从源码安装（开发）：
 
 ```bash
 git clone https://git.pvlb.dev/ml-lab/wink.git

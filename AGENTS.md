@@ -7,7 +7,7 @@
 | org / repo | `ml-lab/wink` |
 | origin | `ssh://git@git-dsh/ml-lab/wink.git` (via the `git-dsh` alias, never the plain host) |
 | knowledge repo | `ssh://git@git-dsh/agentic/wink.git` |
-| package | `wink` (tagged v0.1.0; Forgejo release done, PyPI blocked #35) |
+| package | `wink-diffusion` (import `wink`; v0.1.1 PyPI/Forgejo target) |
 
 `wink` is the image sibling of `ml-lab/tardits`: same complex-valued algebra,
 same config/trainer/logging conventions, new domain. It depends on
@@ -139,7 +139,7 @@ That is the most important fact of this box, and it is the opposite of
 
 - `ci.yml` — `uv sync --locked`, compileall, imports, `pytest -q`, `uv build` +
   `twine check`; no `pull_request` trigger.
-- `publish.yml` — Forgejo OIDC Authorized Integration to `ml-lab/pypi/wink`;
+- `publish.yml` — Forgejo OIDC Authorized Integration to `ml-lab/pypi/wink-diffusion`;
   `AUDIENCE` comes from an Actions **variable**.
 - `publish-pypi.yml` — public PyPI, `PYPI_TOKEN` secret, skipped when absent.
 - `release.yml` — `CHANGELOG.md` section -> Forgejo release + wheel/sdist.

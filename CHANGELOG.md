@@ -1,9 +1,18 @@
 # Changelog
 
-All notable changes to WINK. The project is pre-release; `0.1.0` is the first
-tiny CPU release.
+All notable changes to WINK. `0.1.0` is the first tiny CPU release; `0.1.1` is
+the first PyPI release under the `wink-diffusion` distribution name.
 
 ## [Unreleased]
+
+## [0.1.1] - 2026-11-26
+
+### Changed
+
+- PyPI distribution name is now **`wink-diffusion`**; the import and CLI names
+  remain `wink`, `wtrain`, `wsample` and `weval`.
+- No model or API changes from 0.1.0. This is the first PyPI release; the
+  Forgejo registry keeps the original `wink` 0.1.0 package.
 
 ## [0.1.0] - 2026-11-26
 
