@@ -7,7 +7,7 @@
 | org / repo | `ml-lab/wink` |
 | origin | `ssh://git@git-dsh/ml-lab/wink.git` (via the `git-dsh` alias, never the plain host) |
 | knowledge repo | `ssh://git@git-dsh/agentic/wink.git` |
-| package | `none` (not published; no release workflow yet) |
+| package | `wink` (PyPI + Forgejo workflows ready; not yet tagged) |
 
 `wink` is the image sibling of `ml-lab/tardits`: same complex-valued algebra,
 same config/trainer/logging conventions, new domain. It depends on
@@ -135,16 +135,18 @@ That is the most important fact of this box, and it is the opposite of
 - **The agent may tag on a green `master`.** Shipping a version is not an
   operator-only action; creating repo secrets is (see `AGENTS.d/forge.md`).
 
-`.forgejo/workflows/ci.yml` in this repo is a real build: `uv sync --locked`,
-`compileall`, import smoke and `pytest -q` on `runs-on: docker`. It has no
-`pull_request` trigger; dispatch it manually against a feature branch.
+`.forgejo/workflows/` now holds the four-release layout for this repo:
 
-When the first release is due, copy all four from **`dsh-plugins/dsh-gitea@master`**:
-`ci.yml`, `publish.yml`, `publish-npmjs.yml`, `release.yml`, plus
-`scripts/release-notes.mjs` (the release job needs it, and it reads
-`CHANGELOG.md`). Then **replace the hardcoded namespace and package name** — the
-reference copies publish to `dsh-plugins` under their own name, and a package in
-the wrong namespace cannot be retracted.
+- `ci.yml` — `uv sync --locked`, compileall, imports, `pytest -q`, `uv build` +
+  `twine check`; no `pull_request` trigger.
+- `publish.yml` — Forgejo OIDC Authorized Integration to `ml-lab/pypi/wink`;
+  `AUDIENCE` comes from an Actions **variable**.
+- `publish-pypi.yml` — public PyPI, `PYPI_TOKEN` secret, skipped when absent.
+- `release.yml` — `CHANGELOG.md` section -> Forgejo release + wheel/sdist.
+
+The only missing release action is the signed `v*` tag. **Do not tag until the
+site is ready to go public.** Secrets/variables belong in repo settings, not in
+a workflow or commit.
 
 ## Trigger table
 
