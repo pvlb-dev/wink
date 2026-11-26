@@ -2,9 +2,10 @@
 
 # WINK<br><sup><small>*or: diffusion without the latent training wheels*</small></sup>
 
-🇬🇧 **English** <sub>· Deutsch / Čeština / 中文 / Русский — translations welcome</sub>
+🇬🇧 **English** | 🇩🇪 [Deutsch](README.de.md) | 🇨🇿 [Čeština](README.cs.md) | 🇨🇳 [中文](README.zh.md) | 🇷🇺 [Русский](README.ru.md)
 
-<a href="https://git.pvlb.dev/ml-lab/wink"><img src="https://pvlb.dev/favicon.svg" width="16" height="16" /> Home repo — https://git.pvlb.dev/ml-lab/wink</a>
+<a href="https://git.pvlb.dev/ml-lab/wink"><img src="https://pvlb.dev/favicon.svg" width="16" height="16" /> Home repo — https://git.pvlb.dev/ml-lab/wink</a><br>
+<small>GitHub mirror: <a href="https://github.com/pvlb-dev/wink" target="_blank">https://github.com/pvlb-dev/wink</a></small>
 
 ---
 
