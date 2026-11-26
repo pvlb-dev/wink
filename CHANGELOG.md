@@ -5,6 +5,8 @@ tiny CPU release.
 
 ## [Unreleased]
 
+## [0.1.0] - 2026-11-26
+
 ### Added
 
 - MNIST pixel-space diffusion with complex-valued `hyper` and bidirectional RAT
@@ -18,9 +20,9 @@ tiny CPU release.
   digit buttons, guidance slider, transparent RGBA output. No server inference.
 - CIFAR-10 class-conditional runs, FID harness, head/width/level experiments
   (post-0.1 research, documented in `docs/experiments/`).
+- CI, Forgejo-registry publish, PyPI publish and release-page workflows.
 
-### Pending for 0.1
+### Notes
 
-- Browser JS toy: level-1 RAT inference from exported weights, drawing alpha on
-  a canvas and a digit prompt/guidance control.
-- Release packaging/tag and final quickstart polish.
+- The package is Apache-2.0. WINK is the image sibling of TARDITS, not the
+  TARDITS language model; the RAT block and hypercomplex layers are shared.
