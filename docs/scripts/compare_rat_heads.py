@@ -2,7 +2,7 @@
 
 Usage:
   python docs/scripts/compare_rat_heads.py \
-    --config examples/configs/cifar10_rat_h8_10k.yaml \
+    --config docs/experiments/configs/cifar10_rat_h8_10k.yaml \
     --checkpoint examples/saved/cifar10_rat_h8_10k/final.pt \
     ...
 """

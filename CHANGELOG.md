@@ -23,6 +23,9 @@ tiny CPU release.
 - CI, Forgejo-registry publish, PyPI publish and release-page workflows.
 - README translations: German, Czech, Simplified Chinese and Russian, with the
   Forge repo and GitHub mirror linked from every version.
+- Public `examples/` trimmed to two MNIST entry points and the 11 MB MNIST cache;
+  historical configs archived under `docs/experiments/configs/` and
+  `AGENTS.d/examples/`.
 
 ### Notes
 

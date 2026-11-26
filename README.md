@@ -58,25 +58,26 @@ uv sync --locked --extra mlflow --extra eval
 
 ### Train the 0.1 model (CPU)
 
-The 10k release model takes ~46 min on t14. For a quick first run, the 3k
-promptable model takes ~15 min and uses the same recipe:
+The 10k model behind the browser weights takes ~46 min on t14:
 
 ```bash
-.venv/bin/wtrain -c examples/configs/mnist_rat_cond_cfg_h32.yaml
+.venv/bin/wtrain -c examples/configs/mnist_rat_cond_cfg_h32_10k.yaml
 ```
+
+For a simple unconditional first run, `examples/configs/mnist_rat.yaml` trains
+RAT-16 in ~19 min. The MNIST cache is included in `examples/data/`.
 
 ### Generate prompted digits
 
 ```bash
 .venv/bin/wsample \
-  -c examples/configs/mnist_rat_cond_cfg_h32.yaml \
-  --checkpoint examples/saved/mnist_rat_cond_cfg_h32/final.pt \
+  -c examples/configs/mnist_rat_cond_cfg_h32_10k.yaml \
+  --checkpoint examples/saved/mnist_rat_cond_cfg_h32_10k/final.pt \
   -n 80 --classes 0,1,2,3,4,5,6,7,8,9 \
   --guidance 5 --alpha --nrow 8 -o prompted.png
 ```
 
-Writes a transparent RGBA sheet and a checkerboard preview. For the 10k model use
-`examples/configs/mnist_rat_cond_cfg_h32_10k.yaml` and its `final.pt`.
+Writes a transparent RGBA sheet and a checkerboard preview.
 
 ### Unconditional alpha digits
 
@@ -216,7 +217,9 @@ These are recorded as nulls, not hidden.
 
 ```text
 src/wink/            models, diffusion, trainer, data, alpha, CLIs
-examples/configs/    MNIST, promptable, CIFAR and level experiments
+examples/configs/    two entry points: simple MNIST + promptable 10k
+examples/data/       MNIST cache (11 MB), committed
+examples/saved/      empty; checkpoints written here
 docs/                findings, experiments, model internals, repo map
 web/                 pure-JS promptable toy + exported weights
 tests/               38 tests (no network needed)

@@ -50,8 +50,8 @@ multiply). At 10k, the level 2 run would be ~2.5 h vs ~60 min for level 1.
 - MLflow: `ba63e051e58745aa92bef2fe09a9967d` (`wink-cifar10`)
 - Grid: `docs/assets/cifar10/cifar_rat_l2_w44_3k_64.png`
 - Comparison: `docs/assets/cifar10/levels_param_matched_3k.png`
-- Config (3k screen): `examples/configs/cifar10_rat_l2_w44_3k.yaml`.
-- 10k config ready: `examples/configs/cifar10_rat_l2_w44_10k.yaml`.
+- Config (3k screen): `docs/experiments/configs/cifar10_rat_l2_w44_3k.yaml`.
+- 10k config ready: `docs/experiments/configs/cifar10_rat_l2_w44_10k.yaml`.
 
 ## Next
 

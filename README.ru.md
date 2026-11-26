@@ -61,25 +61,26 @@ uv sync --locked --extra mlflow --extra eval
 
 ### Обучение модели 0.1 (CPU)
 
-Релизная 10k-модель обучается ~46 мин на t14. Для быстрого первого запуска
-модель на 3k с промптами обучается ~15 мин и использует тот же рецепт:
+10k-модель, лежащая в основе браузерных весов, обучается ~46 мин на t14:
 
 ```bash
-.venv/bin/wtrain -c examples/configs/mnist_rat_cond_cfg_h32.yaml
+.venv/bin/wtrain -c examples/configs/mnist_rat_cond_cfg_h32_10k.yaml
 ```
+
+Для простого безусловного первого запуска `examples/configs/mnist_rat.yaml`
+обучает RAT-16 за ~19 мин. Кэш MNIST лежит в `examples/data/`.
 
 ### Генерация цифр по промпту
 
 ```bash
 .venv/bin/wsample \
-  -c examples/configs/mnist_rat_cond_cfg_h32.yaml \
-  --checkpoint examples/saved/mnist_rat_cond_cfg_h32/final.pt \
+  -c examples/configs/mnist_rat_cond_cfg_h32_10k.yaml \
+  --checkpoint examples/saved/mnist_rat_cond_cfg_h32_10k/final.pt \
   -n 80 --classes 0,1,2,3,4,5,6,7,8,9 \
   --guidance 5 --alpha --nrow 8 -o prompted.png
 ```
 
-Записывает прозрачный лист RGBA и превью на шахматной подложке. Для модели 10k
-используйте `examples/configs/mnist_rat_cond_cfg_h32_10k.yaml` и её `final.pt`.
+Записывает прозрачный лист RGBA и превью на шахматной подложке.
 
 ### Безусловные alpha-цифры
 
@@ -225,7 +226,9 @@ x0 [B,C,H,W] -> 4x4 patches -> complex patch embedding
 
 ```text
 src/wink/            models, diffusion, trainer, data, alpha, CLIs
-examples/configs/    MNIST, promptable, CIFAR and level experiments
+examples/configs/    two entry points: simple MNIST + promptable 10k
+examples/data/       MNIST cache (11 MB), committed
+examples/saved/      empty; checkpoints written here
 docs/                findings, experiments, model internals, repo map
 web/                 pure-JS promptable toy + exported weights
 tests/               38 tests (no network needed)

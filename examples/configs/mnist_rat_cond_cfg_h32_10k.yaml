@@ -1,8 +1,7 @@
-# Class-conditional MNIST: same recipe as mnist_rat_h32, with a learned
-# digit class embedding added to every patch token. This is the promptable 0.1
-# model. The 1000-step linear schedule makes the
-# high-noise x0 estimate a 1/sqrt(alpha_bar) amplification (~160x at t=999),
-# which a small model cannot stabilise. At 200 steps the factor is ~2.7x.
+# Promptable MNIST, 10k steps: the model behind web/static/weights.json.
+# A 10-channel one-hot digit plane is concatenated to the noisy image, 10%
+# class dropout gives the null branch, and classifier-free guidance (--guidance)
+# steers the digit. 200-step linear schedule, x0 prediction, RAT-32, 4 layers.
 device: auto
 seed: 1337
 

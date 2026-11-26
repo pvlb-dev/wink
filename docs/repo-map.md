@@ -24,12 +24,12 @@ wink/
 │       ├── trainer.py         # training loop, gamma projection, checkpoints
 │       └── logging.py         # console + MLflow, sample grids
 │
-├── tests/                     # 26 unit/integration tests, no network needed
+├── tests/                     # 38 unit/integration tests, no network needed
 ├── benchmarks/bench_step.py   # ms/step and parameter count
 ├── examples/
-│   ├── configs/               # mnist_rat (best), mnist_hyper, cifar10_hyper, screens
-│   ├── data/                  # datasets, gitignored
-│   └── saved/                 # checkpoints/grids, gitignored
+│   ├── configs/               # mnist_rat + promptable 10k (two entry points)
+│   ├── data/                  # MNIST cache (11 MB), committed
+│   └── saved/                 # empty; checkpoints/grids are gitignored
 ├── docs/
 │   ├── index.md, model-internals.md, repo-map.md
 │   ├── experiments/           # dated run reports
@@ -48,11 +48,11 @@ uv sync --locked --extra mlflow
 .venv/bin/pytest -q
 
 # benchmark one training step (no dataset)
-.venv/bin/python benchmarks/bench_step.py -c examples/configs/mnist_hyper.yaml
+.venv/bin/python benchmarks/bench_step.py -c examples/configs/mnist_rat.yaml
 
 # train
 .venv/bin/wtrain -c examples/configs/mnist_rat.yaml
-.venv/bin/wtrain -c examples/configs/mnist_hyper.yaml
+.venv/bin/wtrain -c examples/configs/mnist_rat_cond_cfg_h32_10k.yaml
 
 # sample
 .venv/bin/wsample -c examples/configs/mnist_rat.yaml \

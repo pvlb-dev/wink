@@ -38,7 +38,7 @@ def main() -> None:
         "--config",
         "-c",
         type=str,
-        default="examples/configs/mnist_hyper.yaml",
+        default="examples/configs/mnist_rat.yaml",
         help="Path to the YAML config",
     )
     parser.add_argument(

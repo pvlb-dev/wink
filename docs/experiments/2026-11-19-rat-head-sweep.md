@@ -46,9 +46,9 @@ loss; do not call a winner on that alone. The speed ranking is clear.
 Reproduce:
 
 ```bash
-.venv/bin/wtrain -c examples/configs/mnist_rat_h8.yaml
-.venv/bin/wtrain -c examples/configs/mnist_rat_h32.yaml
-.venv/bin/wsample -c examples/configs/mnist_rat_h32.yaml \
+.venv/bin/wtrain -c docs/experiments/configs/mnist_rat_h8.yaml
+.venv/bin/wtrain -c docs/experiments/configs/mnist_rat_h32.yaml
+.venv/bin/wsample -c docs/experiments/configs/mnist_rat_h32.yaml \
   --checkpoint examples/saved/mnist_rat_h32/final.pt \
   -n 64 --steps 50 -o rat32.png
 ```

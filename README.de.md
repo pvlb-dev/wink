@@ -60,25 +60,27 @@ uv sync --locked --extra mlflow --extra eval
 
 ### Das 0.1-Modell trainieren (CPU)
 
-Das 10k-Release-Modell braucht auf t14 ~46 min. Für einen schnellen ersten Lauf
-braucht das 3k-promptbare Modell ~15 min und nutzt dasselbe Rezept:
+Das 10k-Modell hinter den Browser-Gewichten braucht auf t14 ~46 min:
 
 ```bash
-.venv/bin/wtrain -c examples/configs/mnist_rat_cond_cfg_h32.yaml
+.venv/bin/wtrain -c examples/configs/mnist_rat_cond_cfg_h32_10k.yaml
 ```
+
+Für einen einfachen unbedingten ersten Lauf trainiert
+`examples/configs/mnist_rat.yaml` RAT-16 in ~19 min. Der MNIST-Cache liegt in
+`examples/data/`.
 
 ### Gepromptete Ziffern erzeugen
 
 ```bash
 .venv/bin/wsample \
-  -c examples/configs/mnist_rat_cond_cfg_h32.yaml \
-  --checkpoint examples/saved/mnist_rat_cond_cfg_h32/final.pt \
+  -c examples/configs/mnist_rat_cond_cfg_h32_10k.yaml \
+  --checkpoint examples/saved/mnist_rat_cond_cfg_h32_10k/final.pt \
   -n 80 --classes 0,1,2,3,4,5,6,7,8,9 \
   --guidance 5 --alpha --nrow 8 -o prompted.png
 ```
 
-Schreibt ein transparentes RGBA-Blatt und eine Schachbrett-Vorschau. Für das 10k-Modell
-`examples/configs/mnist_rat_cond_cfg_h32_10k.yaml` und dessen `final.pt` verwenden.
+Schreibt ein transparentes RGBA-Blatt und eine Schachbrett-Vorschau.
 
 ### Alpha-Ziffern ohne Konditionierung
 
@@ -219,7 +221,9 @@ Diese sind als Nullergebnisse festgehalten, nicht versteckt.
 
 ```text
 src/wink/            models, diffusion, trainer, data, alpha, CLIs
-examples/configs/    MNIST, promptable, CIFAR and level experiments
+examples/configs/    two entry points: simple MNIST + promptable 10k
+examples/data/       MNIST cache (11 MB), committed
+examples/saved/      empty; checkpoints written here
 docs/                findings, experiments, model internals, repo map
 web/                 pure-JS promptable toy + exported weights
 tests/               38 tests (no network needed)
