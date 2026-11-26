@@ -14,7 +14,7 @@
 
 ### Welcome to **WINK**, a tiny lab for complex-valued image generation!
 
-**v0.1.0 (in progress)** is a **promptable MNIST** diffusion model that runs on a laptop CPU,
+**v0.1.0** is a **promptable MNIST** diffusion model that runs on a laptop CPU,
 paints white ink on a **transparent background**, and generates **entirely in the
 browser**. Pick a digit, set guidance, get a digit. 261k parameters, 4 layers,
 RAT-32 — no VAE, no latent decoder, no server.

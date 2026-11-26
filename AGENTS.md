@@ -7,7 +7,7 @@
 | org / repo | `ml-lab/wink` |
 | origin | `ssh://git@git-dsh/ml-lab/wink.git` (via the `git-dsh` alias, never the plain host) |
 | knowledge repo | `ssh://git@git-dsh/agentic/wink.git` |
-| package | `wink` (PyPI + Forgejo workflows ready; not yet tagged) |
+| package | `wink` (tagged v0.1.0; Forgejo release done, PyPI blocked #35) |
 
 `wink` is the image sibling of `ml-lab/tardits`: same complex-valued algebra,
 same config/trainer/logging conventions, new domain. It depends on
