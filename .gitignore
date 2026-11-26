@@ -24,6 +24,8 @@ AGENTS.d/
 # datasets, checkpoints and run artifacts — never commit these
 examples/data/*
 !examples/data/.gitkeep
+!examples/data/mnist_train.npz
+!examples/data/mnist_test.npz
 examples/saved/*
 !examples/saved/.gitkeep
 mlruns/

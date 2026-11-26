@@ -76,7 +76,7 @@ at ~32 width) and the same batch/step budget.
 | level 2, 3k | `a8dd9ee62a014a2fa94e0b65ba265c95` |
 | level 3, 1k | `7837283be013416ab3da6de1d33df9c2` |
 
-Configs: `examples/configs/cifar10_rat_l2_3k.yaml`,
-`examples/configs/cifar10_rat_l3_1k.yaml`.
+Configs: `docs/experiments/configs/cifar10_rat_l2_3k.yaml`,
+`docs/experiments/configs/cifar10_rat_l3_1k.yaml`.
 Grids: `docs/assets/cifar10/cifar_rat_l2_3k_64.png`,
 `cifar_rat_l3_1k_64.png`, `levels_1k_compare.png`.

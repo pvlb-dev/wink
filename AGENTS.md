@@ -204,9 +204,9 @@ uv.lock, .python-version
 .forgejo/workflows/     CI (manual dispatch + master push only)
 src/wink/               namespace package: train, sample, models/, modules/
 tests/                  unit + overfit smoke; no network needed
-examples/configs/       mnist_rat (best), mnist_hyper, cifar10_hyper, experiment screens
-examples/data/          datasets, gitignored
-examples/saved/         checkpoints and sample grids, gitignored
+examples/configs/       mnist_rat + promptable 10k; history in AGENTS.d/examples
+examples/data/          MNIST cache (11 MB), committed for a simple run
+examples/saved/         empty; checkpoints are written here and gitignored
 docs/                   index, model internals, repo map, experiments, findings
 AGENTS.d/               private knowledge clone (ignored here, separate repo)
   GIT.md                auth and signing

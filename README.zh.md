@@ -59,25 +59,26 @@ uv sync --locked --extra mlflow --extra eval
 
 ### 训练 0.1 模型（CPU）
 
-10k 发布模型在 t14 上约需 46 分钟。若想快速跑第一次，3k 的可提示模型约需
-15 分钟，并且使用同一套配方：
+浏览器权重背后的 10k 模型在 t14 上约需 46 分钟：
 
 ```bash
-.venv/bin/wtrain -c examples/configs/mnist_rat_cond_cfg_h32.yaml
+.venv/bin/wtrain -c examples/configs/mnist_rat_cond_cfg_h32_10k.yaml
 ```
+
+若想先做一次简单的无条件训练，`examples/configs/mnist_rat.yaml` 约 19 分钟训练 RAT-16。
+MNIST 缓存已包含在 `examples/data/`。
 
 ### 生成带提示的数字
 
 ```bash
 .venv/bin/wsample \
-  -c examples/configs/mnist_rat_cond_cfg_h32.yaml \
-  --checkpoint examples/saved/mnist_rat_cond_cfg_h32/final.pt \
+  -c examples/configs/mnist_rat_cond_cfg_h32_10k.yaml \
+  --checkpoint examples/saved/mnist_rat_cond_cfg_h32_10k/final.pt \
   -n 80 --classes 0,1,2,3,4,5,6,7,8,9 \
   --guidance 5 --alpha --nrow 8 -o prompted.png
 ```
 
-写出透明的 RGBA 图集和棋盘格预览图。10k 模型请使用
-`examples/configs/mnist_rat_cond_cfg_h32_10k.yaml` 及其 `final.pt`。
+写出透明的 RGBA 图集和棋盘格预览图。
 
 ### 无条件的 alpha 数字
 
@@ -214,7 +215,9 @@ x0 [B,C,H,W] -> 4x4 patches -> complex patch embedding
 
 ```text
 src/wink/            models, diffusion, trainer, data, alpha, CLIs
-examples/configs/    MNIST, promptable, CIFAR and level experiments
+examples/configs/    two entry points: simple MNIST + promptable 10k
+examples/data/       MNIST cache (11 MB), committed
+examples/saved/      empty; checkpoints written here
 docs/                findings, experiments, model internals, repo map
 web/                 pure-JS promptable toy + exported weights
 tests/               38 tests (no network needed)

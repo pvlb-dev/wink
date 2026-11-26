@@ -1,7 +1,6 @@
-# Schedule screen: same model/data/budget as mnist_hyper.yaml, but 200
-# diffusion steps instead of 1000. The 1000-step linear schedule makes the
-# high-noise x0 estimate a 1/sqrt(alpha_bar) amplification (~160x at t=999),
-# which a small model cannot stabilise. At 200 steps the factor is ~2.7x.
+# M1 reference: RAT-16 on MNIST, 200 diffusion steps, 3k CPU steps.
+# The simple unconditional training run; the promptable 0.1 config is
+# mnist_rat_cond_cfg_h32_10k.yaml.
 device: auto
 seed: 1337
 
