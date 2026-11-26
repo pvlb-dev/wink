@@ -21,6 +21,8 @@ tiny CPU release.
 - CIFAR-10 class-conditional runs, FID harness, head/width/level experiments
   (post-0.1 research, documented in `docs/experiments/`).
 - CI, Forgejo-registry publish, PyPI publish and release-page workflows.
+- README translations: German, Czech, Simplified Chinese and Russian, with the
+  Forge repo and GitHub mirror linked from every version.
 
 ### Notes
 

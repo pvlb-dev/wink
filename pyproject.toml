@@ -47,6 +47,7 @@ weval = "wink.eval:main"
 [project.urls]
 Homepage = "https://git.pvlb.dev/ml-lab/wink"
 Repository = "https://git.pvlb.dev/ml-lab/wink"
+GitHub = "https://github.com/pvlb-dev/wink"
 Issues = "https://git.pvlb.dev/ml-lab/wink/issues"
 Documentation = "https://git.pvlb.dev/ml-lab/wink#readme"
 
