@@ -16,7 +16,7 @@
 
 ### Willkommen bei **WINK**, einem winzigen Labor für komplexwertige Bilderzeugung!
 
-**v0.1.0 (in Arbeit)** ist ein **promptbares MNIST**-Diffusionsmodell, das auf einer Laptop-CPU läuft,
+**v0.1.1** ist ein **promptbares MNIST**-Diffusionsmodell, das auf einer Laptop-CPU läuft,
 weiße Tinte auf einen **transparenten Hintergrund** malt und **vollständig im
 Browser** generiert. Ziffer wählen, Guidance einstellen, Ziffer bekommen. 261k Parameter, 4 Layer,
 RAT-32 — kein VAE, kein Latent-Decoder, kein Server.
@@ -50,6 +50,16 @@ Ziffern-Buttons + Guidance-Slider, transparente RGBA-Ausgabe, Inferenz im Web Wo
 Siehe [`web/README.md`](web/README.md).
 
 ### Installation
+
+Von PyPI — der Import heißt weiterhin `wink`:
+
+```bash
+pip install wink-diffusion
+# oder
+uv add wink-diffusion
+```
+
+Aus dem Quellcode für die Entwicklung:
 
 ```bash
 git clone https://git.pvlb.dev/ml-lab/wink.git

@@ -47,8 +47,8 @@ jobs:
             exit 0
           fi
           version="$(sed -n 's/^version = "\(.*\)"$/\1/p' pyproject.toml | head -n1)"
-          if curl -fsS -o /dev/null "https://pypi.org/pypi/wink/$version/json"; then
-            echo "wink $version is already on PyPI; nothing to do."
+          if curl -fsS -o /dev/null "https://pypi.org/pypi/wink-diffusion/$version/json"; then
+            echo "wink-diffusion $version is already on PyPI; nothing to do."
             exit 0
           fi
           ~/.local/bin/uv publish --token "$PYPI_TOKEN" dist/*

@@ -70,10 +70,10 @@ jobs:
           set -eu
           user="${GITHUB_ACTOR:-dsh}"
           version="$(sed -n 's/^version = "\(.*\)"$/\1/p' pyproject.toml | head -n1)"
-          api="https://git.pvlb.dev/api/v1/packages/ml-lab/pypi/wink/$version"
+          api="https://git.pvlb.dev/api/v1/packages/ml-lab/pypi/wink-diffusion/$version"
           status="$(curl -s -o /dev/null -w '%{http_code}' -H "Authorization: Bearer $REGISTRY_TOKEN" "$api")"
           if [ "$status" = "200" ]; then
-            echo "wink $version is already in the Forgejo registry; nothing to do."
+            echo "wink-diffusion $version is already in the Forgejo registry; nothing to do."
             exit 0
           fi
           ~/.local/bin/uv publish \

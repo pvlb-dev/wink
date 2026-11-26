@@ -16,7 +16,7 @@
 
 ### Vítejte v **WINK**, malé laboratoři pro generování obrazu s komplexními hodnotami!
 
-**v0.1.0 (ve vývoji)** je **promptovatelný MNIST** difúzní model, který běží na CPU laptopu,
+**v0.1.1** je **promptovatelný MNIST** difúzní model, který běží na CPU laptopu,
 maluje bílým inkoustem na **průhledné pozadí** a generuje **zcela v prohlížeči**.
 Vyberte číslici, nastavte guidance, dostanete číslici. 261k parametrů, 4 vrstvy,
 RAT-32 — žádný VAE, žádný latentní dekodér, žádný server.
@@ -50,6 +50,16 @@ Tlačítka číslic + posuvník guidance, průhledný RGBA výstup, inference ve
 Viz [`web/README.md`](web/README.md).
 
 ### Instalace
+
+Z PyPI — import zůstává `wink`:
+
+```bash
+pip install wink-diffusion
+# nebo
+uv add wink-diffusion
+```
+
+Ze zdrojového kódu pro vývoj:
 
 ```bash
 git clone https://git.pvlb.dev/ml-lab/wink.git
