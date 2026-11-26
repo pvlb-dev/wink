@@ -109,6 +109,12 @@ mlflow ui --backend-store-uri sqlite:///mlflow.db
 
 <br>
 
+<p align="center">
+<img src="docs/assets/art/wink-arch.webp" alt="WINK architecture: noisy image plus one-hot digit, patch embed, factorized 2D position, time rotor, four RAT blocks, pixel head, unpatchify and alpha renderer." width="92%">
+</p>
+
+*The WINK denoiser. The digit plane is concatenated to the noisy image; the time rotor is applied after the 2D position; the renderer outside the model turns x0 into RGBA.*
+
 ```text
 x0 [B,C,H,W] -> 4x4 patches -> complex patch embedding
              -> + factorised 2D position (+ class plane in v0.1)
